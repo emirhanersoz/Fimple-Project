@@ -1,0 +1,54 @@
+﻿{
+  "Culture": "tur",
+  "Language": {
+    "Id": 166,
+    "ISOCode": "tur",
+    "Name": "Turkish"
+  },
+  "Texts": {
+    "Fi.Infra.Exceptions.FiBusinessReason": {
+      "Welcome Localization": "Yerelleştirmeye Hoş Geldiniz",
+      "A sample with same Code already exists. {0} ({1}).": "Aynı Kod'a sahip bir örnek zaten var. {0} ({1})."
+    }
+  },
+  "Fi.Patika.Schema.Model.SampleType": {
+    "Specific": {
+      "DisplayName": "Özel",
+      "Description": "Özel"
+    },
+    "Common": {
+      "DisplayName": "Genel",
+      "Description": "Genel"
+    }
+  },
+  "Fi.Patika.Api.Controller.Name": {
+    "SamplesController": {
+      "DisplayName": "Örnek",
+      "Description": "Örnek Açıklama"
+    }
+  },
+  "Fi.Patika.Api.Entity.Name": {
+    "Sample": {
+      "DisplayName": "Örnek",
+      "Description": "Örnek Açıklama"
+    }
+  },
+  "Fi.Patika.Api.Field.Name": {
+    "Code": {
+      "DisplayName": "Kod",
+      "Description": "Kod"
+    },
+    "Name": {
+      "DisplayName": "Adı",
+      "Description": "Adı"
+    },
+    "Description": {
+      "DisplayName": "Açıklama",
+      "Description": "Açıklama"
+    },
+    "SampleType": {
+      "DisplayName": "Örnek Tipi",
+      "Description": "Örnek Tipi"
+    }
+  }
+}

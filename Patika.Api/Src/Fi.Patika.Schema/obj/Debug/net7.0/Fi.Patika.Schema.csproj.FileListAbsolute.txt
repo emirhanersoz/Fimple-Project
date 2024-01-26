@@ -1,0 +1,12 @@
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\bin\Debug\net7.0\Fi.Patika.Schema.deps.json
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\bin\Debug\net7.0\Fi.Patika.Schema.dll
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\bin\Debug\net7.0\Fi.Patika.Schema.pdb
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.csproj.AssemblyReference.cache
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.AssemblyInfoInputs.cache
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.AssemblyInfo.cs
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.csproj.CoreCompileInputs.cache
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.dll
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\refint\Fi.Patika.Schema.dll
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\Fi.Patika.Schema.pdb
+C:\Fi\Patika.Api\Src\Fi.Patika.Schema\obj\Debug\net7.0\ref\Fi.Patika.Schema.dll

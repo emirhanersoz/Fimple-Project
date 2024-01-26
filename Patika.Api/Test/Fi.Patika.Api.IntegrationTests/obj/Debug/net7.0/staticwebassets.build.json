@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "EQ5y/KfsmadiduedMkcCLNrI6ModrpLd6a7f3WkWSOM=",
+  "Source": "Fi.Patika.Api.IntegrationTests",
+  "BasePath": "_content/Fi.Patika.Api.IntegrationTests",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Fi\\Patika.Api\\Src\\Fi.Patika.Api\\Fi.Patika.Api.csproj",
+      "Version": 2,
+      "Source": "Fi.Patika.Api",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

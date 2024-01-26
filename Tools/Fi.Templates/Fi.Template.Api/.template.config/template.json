@@ -1,0 +1,114 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Fimple",
+  "classifications": [
+    "Web"
+  ],
+  "name": "Fi.Template.Api",
+  "shortName": "Fi.Template.Api",
+  "defaultName": "Fi.Template.Api",
+  "identity": "Fi.Api.CSharp",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "Fi.Template.Api",
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(RelationalDatabase)",
+          "exclude": [
+            "Persistence/NoSqlCollectionInfo.cs"
+          ],
+          "rename": {
+            "FiTemplateDbContext.cs": "Fi(ServiceUniqueName)DbContext.cs",
+            "FiTemplateDbContextModelSnapshot.cs": "Fi(ServiceUniqueName)DbContextModelSnapshot.cs"
+          }
+        },
+        {
+          "condition": "(NoSqlDatabase)",
+          "exclude": [
+            "Persistence/FiTemplateDbContext.cs"
+          ],
+        }
+      ]
+    }
+  ],
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net7.0",
+          "description": "Target net7.0"
+        }
+      ],
+      "replaces": "net7.0",
+      "defaultValue": "net7.0"
+    },
+    "LocalHostPort": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Local Host Port",
+      "defaultValue": "10001",
+      "replaces": "LocalHostPortParameter"
+    },
+    "StartErrorCode": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Start Error Code",
+      "defaultValue": "0",
+      "replaces": "StartErrorCodeParameter"
+    },
+    "EndErrorCode": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "End Error Code",
+      "defaultValue": "500",
+      "replaces": "EndErrorCodeParameter"
+    },
+    "ServiceUniqueName": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Service Unique Name",
+      "replaces": "TemplateUniqueName",
+      "isRequired": true
+    },
+    "TenantPersistenceStrategy": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Tenant Persistence Strategy",
+      "defaultValue": "DatabasePerTenant",
+      "replaces": "TenantPersistenceStrategyParameter"
+    },
+    "Database": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "Relational",
+          "description": "Relational MsSql/PostgreSql Database"
+        },
+        {
+          "choice": "NoSql",
+          "description": "NoSql Couchbase Database"
+        }
+      ],
+      "defaultValue": "NoSql",
+      "description": "The type of database to use",
+      "isRequired": true
+    },
+    "RelationalDatabase": {
+      "type": "computed",
+      "value": "(Database == \"Relational\")"
+    },
+    "NoSqlDatabase": {
+      "type": "computed",
+      "value": "(Database == \"NoSql\")"
+    }
+  }
+}

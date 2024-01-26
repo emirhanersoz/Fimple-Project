@@ -1,0 +1,20 @@
+{
+  "SerializedFilePath": "/Users/ibrahimuvet/Desktop/Fi/Fi.Src/Fi.Templates/Fi.Template.Api/obj/Debug/net6.0/project.razor.json",
+  "FilePath": "/Users/ibrahimuvet/Desktop/Fi/Fi.Src/Fi.Templates/Fi.Template.Api/Fi.Template.Api.csproj",
+  "Configuration": {
+    "ConfigurationName": "MVC-3.0",
+    "LanguageVersion": "6.0",
+    "Extensions": [
+      {
+        "ExtensionName": "MVC-3.0"
+      }
+    ]
+  },
+  "ProjectWorkspaceState": {
+    "TagHelpers": [],
+    "CSharpLanguageVersion": 1000
+  },
+  "RootNamespace": "Fi.Template.Api",
+  "Documents": [],
+  "SerializationFormat": "0.3"
+}

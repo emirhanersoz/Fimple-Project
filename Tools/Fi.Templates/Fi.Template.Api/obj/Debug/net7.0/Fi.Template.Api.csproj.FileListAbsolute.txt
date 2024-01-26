@@ -1,0 +1,14 @@
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.csproj.AssemblyReference.cache
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.AssemblyInfoInputs.cache
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.AssemblyInfo.cs
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.csproj.CoreCompileInputs.cache
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.MvcApplicationPartsAssemblyInfo.cs
+/Users/ibrahimuvet/Desktop/Fi/Fi.Tools/Tools/Fi.Templates/Fi.Template.Api/obj/Debug/net7.0/Fi.Template.Api.MvcApplicationPartsAssemblyInfo.cache
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.csproj.AssemblyReference.cache
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.AssemblyInfoInputs.cache
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.AssemblyInfo.cs
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.csproj.CoreCompileInputs.cache
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Fi\Tools\Fi.Templates\Fi.Template.Api\obj\Debug\net7.0\Fi.Template.Api.MvcApplicationPartsAssemblyInfo.cache

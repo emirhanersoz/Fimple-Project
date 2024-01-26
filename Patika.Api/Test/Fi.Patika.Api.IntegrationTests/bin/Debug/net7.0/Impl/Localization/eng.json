@@ -1,0 +1,116 @@
+﻿{
+  "Culture": "en-US",
+  "Language": {
+    "Id": 2,
+    "ISOCode": "eng",
+    "Name": "English"
+  },
+  "Texts": {
+    "Fi.Infra.Exceptions.FiBusinessReason": {
+      "Welcome Localization": "Welcome Localization",
+      "A sample with same Code already exists. {0} ({1}).": "A sample with same Code already exists. {0} ({1})."
+    }
+  },
+    "Fi.Patika.Schema.Model.AccountType": {
+      "Specific": {
+        "DisplayName": "Account Type",
+        "Description": "Account Type"
+      },
+      "Common": {
+        "DisplayName": "Common",
+        "Description": "Common"
+      }
+    },
+    "Fi.Patika.Schema.Model.RoleType": {
+      "Specific": {
+        "DisplayName": "Role Type",
+        "Description": "Role Type"
+      },
+      "Common": {
+        "DisplayName": "Common",
+        "Description": "Common"
+      }
+    },
+    "Fi.Patika.Schema.Model.PayeeType": {
+      "Specific": {
+        "DisplayName": "Payee Type",
+        "Description": "Payee Type"
+      },
+      "Common": {
+        "DisplayName": "Common",
+        "Description": "Common"
+      }
+    },
+    "Fi.Patika.Schema.Model.TransactionType": {
+      "Specific": {
+        "DisplayName": "Transaction Type",
+        "Description": "Transaction Type"
+      },
+      "Common": {
+        "DisplayName": "Common",
+        "Description": "Common"
+      }
+    },
+    "Fi.Patika.Api.Controller.Name": {
+      "SamplesController": {
+        "DisplayName": "Samples Name",
+        "Description": "Samples Description"
+      },
+      "CustomersController": {
+        "DisplayName": "Customers Name",
+        "Description": "Customers Description"
+      }
+    },
+    "Fi.Patika.Api.Entity.Name": {
+      "Sample": {
+        "DisplayName": "Sample Name",
+        "Description": "Sample Description"
+      },
+      "Customer": {
+        "DisplayName": "Customer Name",
+        "Description": "Customer Description"
+      }
+    },
+    "Fi.Patika.Api.Field.Name": {
+      "Code": {
+        "DisplayName": "Code",
+        "Description": "Code"
+      },
+      "Name": {
+        "DisplayName": "Name",
+        "Description": "Name"
+      },
+      "Description": {
+        "DisplayName": "Description",
+        "Description": "Description"
+      },
+      "SampleType": {
+        "DisplayName": "SampleType",
+        "Description": "SampleType"
+      },
+      "PhoneNumber": {
+        "DisplayName": "Phone Number",
+        "Description": "Phone Number"
+      },
+      "Email": {
+        "DisplayName": "Email",
+        "Description": "Email"
+      },
+      "DateOfBirth": {
+        "DisplayName": "Date of Birth",
+        "Description": "Date of Birth"
+      },
+      "City": {
+        "DisplayName": "City",
+        "Description": "City"
+      },
+      "State": {
+        "DisplayName": "State",
+        "Description": "State"
+      },
+      "Address": {
+        "DisplayName": "Address",
+        "Description": "Address"
+      }
+    }
+  }

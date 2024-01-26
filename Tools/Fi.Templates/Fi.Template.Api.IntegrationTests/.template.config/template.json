@@ -1,0 +1,26 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Fimple",
+  "classifications": [
+    "Web"
+  ],
+  "name": "Fi.Template.Api.IntegrationTests",
+  "shortName": "Fi.Template.Api.IntegrationTests",
+  "defaultName": "Fi.Template.Api.IntegrationTests",
+  "identity": "Fi.Api.IntegrationTests.CSharp",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "Fi.Template.Api.IntegrationTests",
+  "preferNameDirectory": true,
+  "symbols": {
+    "ServiceUniqueName": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Service Unique Name",
+      "replaces": "TemplateUniqueName",
+      "isRequired": true
+    }
+  }
+}

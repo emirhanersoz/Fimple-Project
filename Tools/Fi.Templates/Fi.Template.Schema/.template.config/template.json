@@ -1,0 +1,30 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Fimple",
+  "classifications": [ "Web" ],
+  "name": "Fi.Template.Schema",
+  "shortName": "Fi.Template.Schema",
+  "defaultName": "Fi.Template.Schema",
+  "identity": "Fi.Schema.CSharp",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "Fi.Template.Schema",
+  "preferNameDirectory": true,
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net7.0",
+          "description": "Target net7.0"
+        }
+      ],
+      "replaces": "net7.0",
+      "defaultValue": "net7.0"
+    }
+  }
+}

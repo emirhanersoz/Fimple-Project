@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "http://json.schemastore.org/dotnetcli.host",
+  "symbolInfo": {
+    "StartErrorCode": {
+      "longName": "StartErrorCode",
+      "shortName": "sec"
+    },
+    "EndErrorCode": {
+      "longName": "EndErrorCode",
+      "shortName": "eec"
+    },
+    "ServiceUniqueName": {
+      "longName": "ServiceUniqueName",
+      "shortName": "mn"
+    },
+    "Database": {
+      "longName": "Database",
+      "shortName": "db"
+    },
+    "LocalHostPort": {
+      "longName": "LocalHostPort",
+      "shortName": "lp"
+    },
+    "TenantPersistenceStrategy": {
+      "longName": "TenantPersistenceStrategy",
+      "shortName": "tps"
+    }
+  },
+  "usageExamples": [
+    "dotnet new Fi.Template.Api -n Fi.FXRate.Api -o /Users/ibrahimuvet/Desktop/Fi/Templates/Fi.FXRate.Api --ServiceUniqueName FXRate --Database Relational --StartErrorCode 6750 --EndErrorCode 7000 --LocalHostPort 10024 --TenantPersistenceStrategy DatabasePerTenant"
+  ]
+}

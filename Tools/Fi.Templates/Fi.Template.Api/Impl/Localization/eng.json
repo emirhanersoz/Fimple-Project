@@ -1,0 +1,54 @@
+﻿{
+  "Culture": "en-US",
+  "Language": {
+    "Id": 2,
+    "ISOCode": "eng",
+    "Name": "English"
+  },
+  "Texts": {
+    "Fi.Infra.Exceptions.FiBusinessReason": {
+      "Welcome Localization": "Welcome Localization",
+      "A sample with same Code already exists. {0} ({1}).": "A sample with same Code already exists. {0} ({1})."
+    }
+  },
+  "Fi.TemplateUniqueName.Schema.Model.SampleType": {
+    "Specific": {
+      "DisplayName": "Specific",
+      "Description": "Specific"
+    },
+    "Common": {
+      "DisplayName": "Common",
+      "Description": "Common"
+    }
+  },
+  "Fi.TemplateUniqueName.Api.Controller.Name": {
+    "SamplesController": {
+      "DisplayName": "Samples Name",
+      "Description": "Samples Description"
+    }
+  },
+  "Fi.TemplateUniqueName.Api.Entity.Name": {
+    "Sample": {
+      "DisplayName": "Sample Name",
+      "Description": "Sample Description"
+    }
+  },
+  "Fi.TemplateUniqueName.Api.Field.Name": {
+    "Code": {
+      "DisplayName": "Code",
+      "Description": "Code"
+    },
+    "Name": {
+      "DisplayName": "Name",
+      "Description": "Name"
+    },
+    "Description": {
+      "DisplayName": "Description",
+      "Description": "Description"
+    },
+    "SampleType": {
+      "DisplayName": "SampleType",
+      "Description": "SampleType"
+    }
+  }
+}
