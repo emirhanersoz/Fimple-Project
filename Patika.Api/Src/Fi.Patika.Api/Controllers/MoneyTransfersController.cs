@@ -13,6 +13,7 @@ using Fi.Infra.Schema.Const;
 using Fi.Infra.Const;
 using Fi.Infra.Context;
 using Fi.Infra.Schema.Model;
+using Fi.Patika.Api.Domain.Entity;
 
 namespace Fi.Patika.Api.Controllers
 {
@@ -38,7 +39,7 @@ namespace Fi.Patika.Api.Controllers
 
         [ApiKey("411e7324-c64a-4452-a0ed-b2b3b1d2894c")]
         [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
-        [HttpGet("ByParameters")]
+        [HttpGet("list")]
         public async Task<ApiResponse<List<MoneyTransferOutputModel>>> GetByParameters()
         {
             var cmd = new GetMoneyTransferByParametersQuery();
@@ -60,7 +61,19 @@ namespace Fi.Patika.Api.Controllers
             return result;
         }
 
-        [ApiKey("68c83ce3-3b53-4a57-9268-c457edfbbe31")]
+        [ApiKey("44f5c66c-2ba1-4be4-b984-28cbf0de71c2")]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [HttpPost("transfer")]
+        public async Task<ApiResponse<MoneyTransferOutputModel>> TransferMoneyCommand([FromBody] MoneyTransferInputModel model)
+        {
+            var cmd = new TransferMoneyCommand(model);
+
+            var result = await base.Execute<MoneyTransferOutputModel>(cmd);
+
+            return result;
+        }
+
+        [ApiKey("d1c77d99-42f6-4285-b134-58c489B9ff7f")]
         [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<MoneyTransferOutputModel>> Update(int Id, [FromBody]MoneyTransferInputModel model)

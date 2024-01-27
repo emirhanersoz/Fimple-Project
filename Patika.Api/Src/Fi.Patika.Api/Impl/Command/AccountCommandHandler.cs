@@ -96,6 +96,5 @@ namespace Fi.Patika.Api.Impl.Command
 
             return new VoidResult();
         }
-
     }
 }

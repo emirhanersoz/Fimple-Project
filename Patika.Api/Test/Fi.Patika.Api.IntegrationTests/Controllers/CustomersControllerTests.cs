@@ -36,7 +36,7 @@ public class CustomersControllerTests : PatikaScenariosBase
     }
 
     [Fact, Trait("Category", "Integration")]
-    public async Task CreateCustomer_RequestedNotExist_ReturnsSuccess_WithItem()
+    public async Task CreateCustomer_IfUserAndCustomerNotExist_ReturnsSuccess_WithItem()
     {
         //Arrange
         byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
@@ -65,5 +65,96 @@ public class CustomersControllerTests : PatikaScenariosBase
         //Assert
         checkCustomerResponse.FiShouldBeSuccessStatus();
         checkCustomerResponse.Value.ShouldNotBeNull();
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task UpdateCustomer_WhenCalled_ReturnsSuccess_WithUpdatedCustomer()
+    {
+        //Arrange
+        byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+        var userInputModel = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+        
+        var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+            "api/v1/Patika/Users", userInputModel);
+
+        var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+            $"{basePath}", customerInputModel);
+
+        customerInputModel.City = "CityCity";
+
+        // Act
+        var response = await HttpClient.FiPutTestAsync<CustomerInputModel?, CustomerOutputModel>(
+                                        $"{basePath}/{customerCreateResponse.Value.Id}", customerInputModel, false);
+
+        // Assert
+        response.FiShouldBeSuccessStatus();
+        response.Value.ShouldNotBeNull();
+        response.Value.City.ShouldEqual("CityCity");
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task DeleteCustomerByKey_WhenCalled_ReturnsSuccess()
+    {
+        //Arrange
+        byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+        var userInputModel = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+
+        var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+            "api/v1/Patika/Users", userInputModel);
+
+        var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+            $"{basePath}", customerInputModel);
+
+        // Act
+        var response = await HttpClient.FiDeleteTestAsync(
+                                        $"{basePath}/{customerCreateResponse.Value.Id}");
+
+        // Assert
+        response.FiShouldBeSuccessStatus();
+        TestDbContext.Set<Customer>().FirstOrDefault(p => p.Id == customerCreateResponse.Value.Id).ShouldBeNull();
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task GetCustomerByKey_IfRequestedItemExists_ReturnsSuccess_WithItem()
+    {
+        //Arrange
+        byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+        var userInputModel = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+
+        var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+            "api/v1/Patika/Users", userInputModel);
+
+        var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+            $"{basePath}", customerInputModel);
+
+        // Act
+        var response = await HttpClient.FiGetTestAsync<CustomerOutputModel>(
+                                        $"{basePath}/{customerCreateResponse.Value.Id}", false);
+
+        // Assert
+        response.FiShouldBeSuccessStatus();
+        response.Value.ShouldNotBeNull();
+        response.Value.Id.ShouldEqual(customerCreateResponse.Value.Id);
     }
 }

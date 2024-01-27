@@ -60,6 +60,30 @@ namespace Fi.Patika.Api.Controllers
             return result;
         }
 
+        [ApiKey("6012b350-e7ab-44df-bfa6-76d91ef8073a")]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [HttpPut("{Id:int}/withdraw")]
+        public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Withdraw(int Id, [FromBody] DepositAndWithdrawInputModel model)
+        {
+            var cmd = new TransactionWithdrawCommand(Id, model);
+
+            var result = await base.Execute<DepositAndWithdrawOutputModel>(cmd);
+
+            return result;
+        }
+
+        [ApiKey("8ded44C2-22c4-4986-b1bc-375ad3d24742")]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [HttpPut("{Id:int}/deposit")]
+        public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Deposit(int Id, [FromBody] DepositAndWithdrawInputModel model)
+        {
+            var cmd = new TransactionDepositCommand(Id, model);
+
+            var result = await base.Execute<DepositAndWithdrawOutputModel>(cmd);
+
+            return result;
+        }
+
         [ApiKey("3a9b5b96-7a15-4469-a2ea-8014737505ee")]
         [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
         [HttpPut("{Id:int}")]

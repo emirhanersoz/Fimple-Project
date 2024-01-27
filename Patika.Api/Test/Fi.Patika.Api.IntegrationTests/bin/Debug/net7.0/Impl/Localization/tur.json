@@ -11,44 +11,302 @@
       "A sample with same Code already exists. {0} ({1}).": "Aynı Kod'a sahip bir örnek zaten var. {0} ({1})."
     }
   },
-  "Fi.Patika.Schema.Model.SampleType": {
-    "Specific": {
-      "DisplayName": "Özel",
-      "Description": "Özel"
+    "Fi.Patika.Schema.Model.AccountType": {
+      "Checking": {
+        "DisplayName": "Vadeli Hesap",
+        "Description": "Faiz kazanabilen vadeli hesap türü."
+      },
+      "Savings": {
+        "DisplayName": "Vadesiz Hesap",
+        "Description": "Faiz kazanmayan vadesiz hesap türü."
+      },
+      "Business": {
+        "DisplayName": "İş Hesabı",
+        "Description": "İşle ilgili finansal işlemler için kullanılan hesap türü."
+      },
+      "Investment": {
+        "DisplayName": "Yatırım Hesabı",
+        "Description": "Yatırım amacıyla kullanılan hesap türü."
+      },
+      "ForeignCurrency": {
+        "DisplayName": "Döviz Hesabı",
+        "Description": "Farklı döviz türleriyle işlem yapılabilen hesap türü."
+      },
+      "Deposit": {
+        "DisplayName": "Mevduat Hesabı",
+        "Description": "Yatırılan paraya faiz kazandıran hesap türü."
+      }
     },
-    "Common": {
-      "DisplayName": "Genel",
-      "Description": "Genel"
-    }
-  },
+    "Fi.Patika.Schema.Model.PayeeType": {
+      "Phone": {
+        "DisplayName": "Telefon Faturası",
+        "Description": "Telefon ödemeleri için alacaklı türü."
+      },
+      "Internet": {
+        "DisplayName": "İnternet Faturası",
+        "Description": "İnternet ödemeleri için alacaklı türü."
+      },
+      "Electric": {
+        "DisplayName": "Elektrik Faturası",
+        "Description": "Elektrik ödemeleri için alacaklı türü."
+      },
+      "Water": {
+        "DisplayName": "Su Faturası",
+        "Description": "Su ödemeleri için alacaklı türü."
+      },
+      "Gas": {
+        "DisplayName": "Doğalgaz Faturası",
+        "Description": "Doğalgaz ödemeleri için alacaklı türü."
+      }
+    },
+    "Fi.Patika.Schema.Model.RoleType": {
+      "Admin": {
+        "DisplayName": "Yönetici",
+        "Description": "Sistem yöneticisi rolü."
+      },
+      "Support": {
+        "DisplayName": "Destek",
+        "Description": "Müşteri destek rolü."
+      },
+      "Auditor": {
+        "DisplayName": "Denetçi",
+        "Description": "Finansal işlemleri denetleyen rol."
+      },
+      "User": {
+        "DisplayName": "Kullanıcı",
+        "Description": "Sistem kullanıcısı rolü."
+      },
+      "PlatinumUser": {
+        "DisplayName": "Platin Kullanıcı",
+        "Description": "Özel avantajlara sahip platin kullanıcı rolü."
+      },
+      "EliteUser": {
+        "DisplayName": "Elit Kullanıcı",
+        "Description": "En üst düzeyde ayrıcalıklı elit kullanıcı rolü."
+      }
+    },
+    "Fi.Patika.Schema.Model.TransactionType": {
+      "Withdraw": {
+        "DisplayName": "Para Çekme İşlemi",
+        "Description": "Hesaptan para çekme işlemi."
+      },
+      "Deposit": {
+        "DisplayName": "Para Yatırma İşlemi",
+        "Description": "Hesaba para yatırma işlemi."
+      }
+    },
   "Fi.Patika.Api.Controller.Name": {
-    "SamplesController": {
-      "DisplayName": "Örnek",
-      "Description": "Örnek Açıklama"
+    "AccountCreditsController": {
+      "DisplayName": "Hesap Kredileri Kontrolcüsü",
+      "Description": "Hesap kredilerini yönetmekle sorumlu kontrolcü."
+    },
+    "AccountsController": {
+      "DisplayName": "Hesaplar Kontrolcüsü",
+      "Description": "Hesapları yönetmekle sorumlu kontrolcü."
+    },
+    "CreditsController": {
+      "DisplayName": "Kredi Kontrolcüsü",
+      "Description": "Kredileri yönetmekle sorumlu kontrolcü."
+    },
+    "CustomersController": {
+      "DisplayName": "Müşteri Kontrolcüsü",
+      "Description": "Müşterileri yönetmekle sorumlu kontrolcü."
+    },
+    "DepositAndWithdrawsController": {
+      "DisplayName": "Yatırma ve Çekme Kontrolcüsü",
+      "Description": "Yatırma ve çekme işlemlerini yönetmekle sorumlu kontrolcü."
+    },
+    "LoginsController": {
+      "DisplayName": "Giriş Kontrolcüsü",
+      "Description": "Kullanıcı girişlerini yönetmekle sorumlu kontrolcü."
+    },
+    "MoneyTransfersController": {
+      "DisplayName": "Para Transferi Kontrolcüsü",
+      "Description": "Para transferlerini yönetmekle sorumlu kontrolcü."
+    },
+    "PayeesController": {
+      "DisplayName": "Alacaklılar Kontrolcüsü",
+      "Description": "Alacaklıları yönetmekle sorumlu kontrolcü."
+    },
+    "SupportRequestsController": {
+      "DisplayName": "Destek Talepleri Kontrolcüsü",
+      "Description": "Destek taleplerini yönetmekle sorumlu kontrolcü."
+    },
+    "UsersController": {
+      "DisplayName": "Kullanıcılar Kontrolcüsü",
+      "Description": "Kullanıcıları yönetmekle sorumlu kontrolcü."
     }
   },
   "Fi.Patika.Api.Entity.Name": {
-    "Sample": {
-      "DisplayName": "Örnek",
-      "Description": "Örnek Açıklama"
+    "Account": {
+      "DisplayName": "Hesap",
+      "Description": "Müşterinin finansal varlıklarını temsil eden hesap."
+    },
+    "AccountCredit": {
+      "DisplayName": "HesapKredisi",
+      "Description": "Bir müşterinin hesabına atanmış kredi."
+    },
+    "Credit": {
+      "DisplayName": "Kredi",
+      "Description": "Finansal bir kurumdan alınmış kredi."
+    },
+    "Customer": {
+      "DisplayName": "Müşteri",
+      "Description": "Finansal işlemlerde yer alan müşteri."
+    },
+    "DepositAndWithdraw": {
+      "DisplayName": "YatırmaÇekme",
+      "Description": "Hesaba para yatırma ve çekme işlemlerini temsil eden kayıt."
+    },
+    "Login": {
+      "DisplayName": "Giriş",
+      "Description": "Kullanıcının sistemdeki girişini temsil eden kayıt."
+    },
+    "MoneyTransfer": {
+      "DisplayName": "ParaTransferi",
+      "Description": "Hesaplar arası gerçekleşen para transferi işlemi."
+    },
+    "Payee": {
+      "DisplayName": "Alacaklı",
+      "Description": "Bir ödeme veya transferde alacaklı olan kişi veya kuruluş."
+    },
+    "SupportRequest": {
+      "DisplayName": "DestekTalebi",
+      "Description": "Müşteri tarafından gönderilen destek talebi."
+    },
+    "User": {
+      "DisplayName": "Kullanıcı",
+      "Description": "Sisteme kayıtlı olan kullanıcı."
     }
   },
   "Fi.Patika.Api.Field.Name": {
     "Code": {
       "DisplayName": "Kod",
-      "Description": "Kod"
+      "Description": "Kullanılan dilin kodu"
     },
     "Name": {
-      "DisplayName": "Adı",
-      "Description": "Adı"
+      "DisplayName": "Dilin İsmi",
+      "Description": "Kullanılan dilin ismi"
     },
     "Description": {
-      "DisplayName": "Açıklama",
-      "Description": "Açıklama"
+      "DisplayName": "Dilin Açıklama",
+      "Description": "Kullanılan dile ait açıklama"
     },
-    "SampleType": {
-      "DisplayName": "Örnek Tipi",
-      "Description": "Örnek Tipi"
+    "Balance": {
+      "DisplayName": "Bakiye",
+      "Description": "Hesaptaki mevcut bakiye."
+    },
+    "Salary": {
+      "DisplayName": "Maaş",
+      "Description": "Bireyin aylık maaşı."
+    },
+    "BankScore": {
+      "DisplayName": "Banka Puanı",
+      "Description": "Banka tarafından bireye atanmış puan."
+    },
+    "TotailDailyTransferAmount": {
+      "DisplayName": "Günlük Transfer Miktarı",
+      "Description": "İzin verilen toplam günlük transfer miktarı."
+    },
+    "TotalAmount": {
+      "DisplayName": "Toplam Miktar",
+      "Description": "Bireyin hesabına ilişkilendirilen toplam miktar."
+    },
+    "MontlyPayment": {
+      "DisplayName": "Aylık Ödeme",
+      "Description": "Bir kredi için aylık ödeme miktarı."
+    },
+    "RepaymentPeriodMonths": {
+      "DisplayName": "Ödeme Süresi",
+      "Description": "Kredinin geri ödeme süresi (ay olarak)."
+    },
+    "LoanDate": {
+      "DisplayName": "KrediTarihi",
+      "Description": "Kredinin başlatıldığı tarih."
+    },
+    "PhoneNumber": {
+      "DisplayName": "TelefonNumarası",
+      "Description": "Bireyin telefon numarası."
+    },
+    "Email": {
+      "DisplayName": "Email",
+      "Description": "Bireyin email adresi."
+    },
+    "DateOfBirth": {
+      "DisplayName": "Doğum Tarihi",
+      "Description": "Bireyin doğum tarihi."
+    },
+    "City": {
+      "DisplayName": "Şehir",
+      "Description": "Bireyin ikamet ettiği şehir."
+    },
+    "State": {
+      "DisplayName": "İlçe",
+      "Description": "Bireyin ikamet ettiği ilçe."
+    },
+    "Address": {
+      "DisplayName": "Adres",
+      "Description": "Bireyin adresi."
+    },
+    "Amount": {
+      "DisplayName": "Miktar",
+      "Description": "Genel bir miktar alanı."
+    },
+    "isSucceded": {
+      "DisplayName": "Başarılı Mı",
+      "Description": "Bir işlemin başarılı olup olmadığını belirten bir boolean."
+    },
+    "LoginTime": {
+      "DisplayName": "Giriş Zamanı",
+      "Description": "Son girişin zamanı."
+    },
+    "Comment": {
+      "DisplayName": "Yorum",
+      "Description": "Bir kayıtla ilişkilendirilmiş bir yorum."
+    },
+    "PaymentDay": {
+      "DisplayName": "Ödeme Günü",
+      "Description": "Bir ödemenin vadesi olan ayın günü."
+    },
+    "isPayment": {
+      "DisplayName": "Ödeme Yapıldı Mı",
+      "Description": "Bir ödemenin yapılıp yapılmadığını belirten bir boolean."
+    },
+    "Subject": {
+      "DisplayName": "Konu",
+      "Description": "Bir iletişim veya mesajın konusu."
+    },
+    "isAnswered": {
+      "DisplayName": "Cevaplandı Mı",
+      "Description": "Bir sorunun veya sorunun cevaplandığını belirten bir boolean."
+    },
+    "Answered": {
+      "DisplayName": "Cevap",
+      "Description": "Bir sorunun veya sorunun cevabı."
+    },
+    "AnsweredDate": {
+      "DisplayName": "Cevap Tarihi",
+      "Description": "Bir sorunun veya sorunun cevaplandığı tarih."
+    },
+    "PasswordHash": {
+      "DisplayName": "Şifre Hash",
+      "Description": "Bir kullanıcının şifresinin hash değeri."
+    },
+    "PasswordSalt": {
+      "DisplayName": "Şifre Salt",
+      "Description": "Şifreleme işleminde kullanılan salt değeri."
+    },
+    "RefreshToken": {
+      "DisplayName": "YenilemeToken",
+      "Description": "Kimlik doğrulamada kullanılan yenileme token'ı."
+    },
+    "TokenCreated": {
+      "DisplayName": "Token Oluşturuldu",
+      "Description": "Bir kimlik doğrulama token'ının oluşturulduğu tarih ve saat."
+    },
+    "TokenExpires": {
+      "DisplayName": "Token Sona Erme",
+      "Description": "Bir kimlik doğrulama token'ının sona erdiği tarih ve saat."
     }
   }
 }

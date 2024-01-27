@@ -46,18 +46,6 @@ public class SamplesControllerTests : PatikaScenariosBase
     }
 
     [Fact, Trait("Category", "Integration")]
-    public async Task GetByKey_IfRequestedItemDoesNotExist_ReturnsBadRequest_WithItemDoesNotExist()
-    {
-        // Arrange
-        // await EnsureEntityIsEmpty<Sample>();
-        var notExistValue = "999";
-        // Act && Assert
-        await HttpClient.FiGetShouldBeBadRequestStatus<SampleOutputModel>(
-                                        $"{basePath}/{notExistValue}",
-                                        BaseErrorCodes.ItemDoNotExists.Code, notExistValue);
-    }
-
-    [Fact, Trait("Category", "Integration")]
     public async Task GetAllList_IfItemsExist_ReturnSuccess_WithList()
     {
         // Arrange
@@ -74,6 +62,19 @@ public class SamplesControllerTests : PatikaScenariosBase
         response.FiShouldBeSuccessStatus();
         response.Value.ShouldNotBeNull();
         response.Value.Count.ShouldBeGreaterThan(0);
+    }
+
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task GetByKey_IfRequestedItemDoesNotExist_ReturnsBadRequest_WithItemDoesNotExist()
+    {
+        // Arrange
+        // await EnsureEntityIsEmpty<Sample>();
+        var notExistValue = "999";
+        // Act && Assert
+        await HttpClient.FiGetShouldBeBadRequestStatus<SampleOutputModel>(
+                                        $"{basePath}/{notExistValue}",
+                                        BaseErrorCodes.ItemDoNotExists.Code, notExistValue);
     }
 
     [Fact, Trait("Category", "Integration")]

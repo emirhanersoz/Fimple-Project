@@ -60,6 +60,18 @@ namespace Fi.Patika.Api.Controllers
             return result;
         }
 
+        [ApiKey("ba9df860-4e2a-48cf-b274-03d9036a01f4")]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [HttpPut("Payment/{Id:int}")]
+        public async Task<ApiResponse<PayeeOutputModel>> Payment(int Id, [FromBody] PayeeInputModel model)
+        {
+            var cmd = new PaymentPayeeCommand(Id, model);
+
+            var result = await base.Execute<PayeeOutputModel>(cmd);
+
+            return result;
+        }
+
         [ApiKey("87fad470-4840-4b6e-bc99-30ac8affb5aa")]
         [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
         [HttpPut("{Id:int}")]

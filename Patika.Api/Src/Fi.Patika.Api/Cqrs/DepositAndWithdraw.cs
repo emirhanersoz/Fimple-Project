@@ -9,6 +9,9 @@ namespace Fi.Patika.Api.Cqrs
 
     public record UpdateDepositAndWithdrawCommand(int Id, DepositAndWithdrawInputModel Model) : CommandBase<DepositAndWithdrawOutputModel>;
 
+    public record TransactionWithdrawCommand(int Id, DepositAndWithdrawInputModel Model) : CommandBase<DepositAndWithdrawOutputModel>;
+    public record TransactionDepositCommand(int Id, DepositAndWithdrawInputModel Model) : CommandBase<DepositAndWithdrawOutputModel>;
+
     public record DeleteDepositAndWithdrawCommand(int Id) : CommandBase<VoidResult>;
 
     public record GetDepositAndWithdrawByParametersQuery : QueryBase<List<DepositAndWithdrawOutputModel>>;

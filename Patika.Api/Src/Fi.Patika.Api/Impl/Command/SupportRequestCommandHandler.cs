@@ -67,6 +67,11 @@ namespace Fi.Patika.Api.Impl.Command
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "SupportRequest"], message.Id);
 
+            fromDb.AnsweredDate = DateTime.UtcNow;
+            fromDb.Answered = message.Model.Answered;
+            fromDb.isAnswered = true;
+            message.Model.isAnswered = true;
+
             var mapped = mapper.Map<SupportRequest>(message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);

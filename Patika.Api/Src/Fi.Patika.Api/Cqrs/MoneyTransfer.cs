@@ -14,6 +14,6 @@ namespace Fi.Patika.Api.Cqrs
     public record GetMoneyTransferByParametersQuery : QueryBase<List<MoneyTransferOutputModel>>;
     
     public record GetMoneyTransferByKeyQuery(int Id) : QueryBase<MoneyTransferOutputModel>;
-    public record TransferMoneyCommand(int Id,int AccountId, int DestId, MoneyTransferInputModel Model) : CommandBase<MoneyTransferOutputModel>;
+    public record TransferMoneyCommand(MoneyTransferInputModel Model) : CommandBase<MoneyTransferOutputModel>;
 
 }

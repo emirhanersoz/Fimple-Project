@@ -20,12 +20,15 @@ using Fi.Persistence.Relational.Interfaces;
 using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
 namespace Fi.Patika.Api.Impl.Command
 {
     public class DepositAndWithdrawCommandHandler :
         IFiRequestHandler<CreateDepositAndWithdrawCommand, DepositAndWithdrawOutputModel>,
         IFiRequestHandler<UpdateDepositAndWithdrawCommand, DepositAndWithdrawOutputModel>,
+        IFiRequestHandler<TransactionWithdrawCommand, DepositAndWithdrawOutputModel>,
+        IFiRequestHandler<TransactionDepositCommand, DepositAndWithdrawOutputModel>,
         IFiRequestHandler<DeleteDepositAndWithdrawCommand, VoidResult>
     {
         private readonly ISessionContextDI sessionDI;
@@ -33,6 +36,9 @@ namespace Fi.Patika.Api.Impl.Command
         private readonly IMapper mapper;
         private readonly IExceptionFactory exceptionFactory;
         private readonly IJsonStringLocalizer localizer;
+
+        private const decimal dailySingleTransactionLimit = 20000;
+        private const decimal dailyTotalTransactionLimit = 50000;
 
         public DepositAndWithdrawCommandHandler(ISessionContextDI sessionDI, IFiModuleDbContext dbContext,
             IMapper mapper, IExceptionFactory exceptionFactory, IJsonStringLocalizer localizer)
@@ -90,5 +96,77 @@ namespace Fi.Patika.Api.Impl.Command
             return new VoidResult();
         }
 
+        public async Task<DepositAndWithdrawOutputModel> Handle(TransactionDepositCommand message, CancellationToken cancellationToken)
+        {
+            sessionDI.ExecutionTrace.InitTrace();
+
+            message.Model.Id = message.Id;
+
+            var fromDb = await dbContext.Set<DepositAndWithdraw>()
+                                        .Include(x => x.Account)
+                                        .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
+
+            if (fromDb == null)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+
+            if (message.Model.Amount > dailySingleTransactionLimit)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            if (message.Model.Amount + dailyTotalTransactionLimit > dailyTotalTransactionLimit)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            if (fromDb.Account.TotailDailyTransferAmount > message.Model.Amount + fromDb.Account.TotailDailyTransferAmount)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            fromDb.Account.Balance += message.Model.Amount;
+            fromDb.Account.TotailDailyTransferAmount += message.Model.Amount;
+            message.Model.isSucceded = true;
+            message.Model.TransactionType = TransactionType.Deposit;
+
+            var mapped = mapper.Map<DepositAndWithdraw>(message.Model);
+
+            await dbContext.UpdatePartial(fromDb, mapped);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<DepositAndWithdrawOutputModel>(fromDb);
+        }
+
+        public async Task<DepositAndWithdrawOutputModel> Handle(TransactionWithdrawCommand message, CancellationToken cancellationToken)
+        {
+            sessionDI.ExecutionTrace.InitTrace();
+
+            message.Model.Id = message.Id;
+
+            var fromDb = await dbContext.Set<DepositAndWithdraw>()
+                                        .Include(x => x.Account)    
+                                        .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
+
+            if (fromDb == null)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+
+            if (message.Model.Amount > dailySingleTransactionLimit)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            if (message.Model.Amount + dailyTotalTransactionLimit > dailyTotalTransactionLimit)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            if (fromDb.Account.TotailDailyTransferAmount > message.Model.Amount + fromDb.Account.TotailDailyTransferAmount)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            if (message.Model.Amount > fromDb.Account.Balance)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id, message.Model.Amount);
+
+            fromDb.Account.Balance -= message.Model.Amount;
+            fromDb.Account.TotailDailyTransferAmount += message.Model.Amount;
+            message.Model.isSucceded = true;
+            message.Model.TransactionType = TransactionType.Withdraw;
+
+            var mapped = mapper.Map<DepositAndWithdraw>(message.Model);
+
+            await dbContext.UpdatePartial(fromDb, mapped);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<DepositAndWithdrawOutputModel>(fromDb);
+        }
     }
 }

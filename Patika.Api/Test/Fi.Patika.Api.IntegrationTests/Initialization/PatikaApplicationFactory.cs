@@ -8,6 +8,7 @@ using Fi.Test.IntegrationTests;
 using Fi.Test.IntegrationTests.Interfaces;
 using Moq;
 using FizzWare.NBuilder;
+using Fi.Patika.Api.Domain.Entity;
 
 namespace Fi.Patika.Api.IntegrationTests.Initialization;
 
@@ -22,8 +23,26 @@ public class PatikaApplicationFactory : FiIntegrationTestApplicationFactory<Star
         */
     }
 
-    protected override void ModuleSeedData(IFiModuleDbContext mockDbContext, IServiceProvider sp)
-    {
+    protected override async void ModuleSeedData(IFiModuleDbContext mockDbContext, IServiceProvider sp)
+    {/*
+        var dbContext = (MockDbContext)mockDbContext;
+
+        for(int i = 0; i < 5; i++)
+        {
+            var user = Builder<User>.CreateNew()
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            var account = Builder<Account>.CreateNew()
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            user.Id = i;
+            
+            await dbContext.AddAsync(user);
+            await dbContext.AddAsync(account);
+            await dbContext.SaveChangesAsync();
+        }*/
+
+
         /* 
         If you want to add global seed data for all your test, you can add them in here.
         This block is just an example, prepare this block according to your business logic.

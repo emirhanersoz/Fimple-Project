@@ -8,5 +8,6 @@ namespace Fi.Patika.Api
         public const string Create_Patika = "CREATE_Patika";
         public const string Update_Patika = "UPDATE_Patika";
         public const string Delete_Patika = "DELETE_Patika";
+        public const string Transaction_Patika = "TRANSACTION_Patika";
     }
 }

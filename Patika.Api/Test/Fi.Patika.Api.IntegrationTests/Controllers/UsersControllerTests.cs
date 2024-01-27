@@ -1,4 +1,5 @@
-﻿using Fi.Patika.Api.Domain.Entity;
+﻿using Fi.Infra.Tools.DefinitionGenerator;
+using Fi.Patika.Api.Domain.Entity;
 using Fi.Patika.Api.IntegrationTests.Initialization;
 using Fi.Patika.Schema.Model;
 using Fi.Test.Extensions;
@@ -26,7 +27,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task Create_IfRequestedNotExist_ReturnsSuccess_WithItem()
+        public async Task CreateUser_IfNotExists_ReturnsSuccess_WithCreatedUser()
         {
             // Arrange
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
@@ -47,7 +48,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task Update_WhenCalled_ReturnsSuccess_WithUpdatedItem()
+        public async Task UpdateUser_WhenCalled_ReturnsSuccess_WithUpdatedUser()
         {
             // Arrange
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
@@ -58,7 +59,6 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
 
             var responsePost = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
                                             $"{basePath}", inputModel);
-
             inputModel.RoleType = RoleType.Auditor;
 
             // Act
@@ -72,7 +72,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task DeleteByKey_WhenCalled_ReturnsSuccess()
+        public async Task DeleteUserByKey_WhenCalled_ReturnsSuccess()
         {
             // Arrange
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
@@ -94,10 +94,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task GetByKey_IfRequestedItemExist_ReturnsSuccess_WithItem()
+        public async Task GetUserByKey_IfRequestedItemExists_ReturnsSuccess_WithItem()
         {
             // Arrange
-            // await EnsureEntityIsEmpty<Sample>();
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
 
             var inputModel = Builder<UserInputModel>.CreateNew()
@@ -118,12 +117,10 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task GetAllList_IfItemsExist_ReturnSuccess_WithList()
+        public async Task GetUsersByParameters_IfItemsExist_ReturnsSuccess_WithList()
         {
             // Arrange
-            // await EnsureEntityIsEmpty<Sample>();
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
             var inputModel = Builder<UserInputModel>.CreateNew()
                 .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray)
                                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
@@ -132,14 +129,13 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
                                             $"{basePath}", inputModel);
 
             // Act
-            var response = await HttpClient.FiGetTestAsync<UserOutputModel>(
-                                            $"{basePath}/{responsePost.Value.Id}", false);
-
+            var response = await HttpClient.FiGetTestAsync<List<UserOutputModel>>(
+                                            $"{basePath}/ByParameters", false);
+            
             // Assert
-            Assert.NotNull(response);
-            Assert.True(response.Value.PasswordSalt.Count() > 0);
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
+            response.Value.Count.ShouldBeGreaterThan(0);
         }
     }
 }

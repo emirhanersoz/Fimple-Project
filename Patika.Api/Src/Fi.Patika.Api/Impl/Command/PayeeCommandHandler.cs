@@ -20,12 +20,14 @@ using Fi.Persistence.Relational.Interfaces;
 using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Fi.Infra.Utility;
 
 namespace Fi.Patika.Api.Impl.Command
 {
     public class PayeeCommandHandler :
         IFiRequestHandler<CreatePayeeCommand, PayeeOutputModel>,
         IFiRequestHandler<UpdatePayeeCommand, PayeeOutputModel>,
+        IFiRequestHandler<PaymentPayeeCommand, PayeeOutputModel>,
         IFiRequestHandler<DeletePayeeCommand, VoidResult>
     {
         private readonly ISessionContextDI sessionDI;
@@ -73,6 +75,36 @@ namespace Fi.Patika.Api.Impl.Command
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return mapper.Map<PayeeOutputModel>(fromDb);
+        }
+
+        public async Task<PayeeOutputModel> Handle(PaymentPayeeCommand message, CancellationToken cancellationToken)
+        {
+            sessionDI.ExecutionTrace.InitTrace();
+
+            message.Model.Id = message.Id;
+
+            var fromDbPayee = await dbContext.Set<Payee>()
+                                        .Include(p => p.Account)
+                                        .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
+
+            if (fromDbPayee == null)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id);
+
+            if (fromDbPayee.Account.Balance < message.Model.Amount)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id, fromDbPayee.Account.Balance);
+
+            if (message.Model.isPayment == true)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id, message.Model.isPayment);
+
+            fromDbPayee.Account.Balance -= message.Model.Amount;
+            message.Model.isPayment = true;
+
+            var mapped = mapper.Map<Payee>(message.Model);
+
+            await dbContext.UpdatePartial(fromDbPayee, mapped);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return mapper.Map<PayeeOutputModel>(fromDbPayee);
         }
 
         public async Task<VoidResult> Handle(DeletePayeeCommand message, CancellationToken cancellationToken)

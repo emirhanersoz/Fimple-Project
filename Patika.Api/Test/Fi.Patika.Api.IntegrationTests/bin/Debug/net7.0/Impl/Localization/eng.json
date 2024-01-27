@@ -11,106 +11,302 @@
       "A sample with same Code already exists. {0} ({1}).": "A sample with same Code already exists. {0} ({1})."
     }
   },
-    "Fi.Patika.Schema.Model.AccountType": {
-      "Specific": {
-        "DisplayName": "Account Type",
-        "Description": "Account Type"
+  "Fi.Patika.Schema.Model.AccountType": {
+    "Checking": {
+      "DisplayName": "Term Deposit",
+      "Description": "Interest-bearing term deposit account type."
+    },
+    "Savings": {
+      "DisplayName": "Current Account",
+      "Description": "Non-interest-bearing current account type."
+    },
+    "Business": {
+      "DisplayName": "Business Account",
+      "Description": "Account type used for financial transactions related to business operations."
+    },
+    "Investment": {
+      "DisplayName": "Investment Account",
+      "Description": "Account type used for investment purposes."
+    },
+    "ForeignCurrency": {
+      "DisplayName": "Foreign Currency Account",
+      "Description": "Account type that allows transactions with different currency types."
+    },
+    "Deposit": {
+      "DisplayName": "Deposit Account",
+      "Description": "Account type that earns interest on deposited funds."
+    }
+  },
+    "Fi.Patika.Schema.Model.PayeeType": {
+      "Phone": {
+        "DisplayName": "Phone Bill",
+        "Description": "Payee type for phone bill payments."
       },
-      "Common": {
-        "DisplayName": "Common",
-        "Description": "Common"
+      "Internet": {
+        "DisplayName": "Internet Bill",
+        "Description": "Payee type for internet bill payments."
+      },
+      "Electric": {
+        "DisplayName": "Electricity Bill",
+        "Description": "Payee type for electricity bill payments."
+      },
+      "Water": {
+        "DisplayName": "Water Bill",
+        "Description": "Payee type for water bill payments."
+      },
+      "Gas": {
+        "DisplayName": "Gas Bill",
+        "Description": "Payee type for gas bill payments."
       }
     },
     "Fi.Patika.Schema.Model.RoleType": {
-      "Specific": {
-        "DisplayName": "Role Type",
-        "Description": "Role Type"
+      "Admin": {
+        "DisplayName": "Administrator",
+        "Description": "System administrator role."
       },
-      "Common": {
-        "DisplayName": "Common",
-        "Description": "Common"
-      }
-    },
-    "Fi.Patika.Schema.Model.PayeeType": {
-      "Specific": {
-        "DisplayName": "Payee Type",
-        "Description": "Payee Type"
+      "Support": {
+        "DisplayName": "Support",
+        "Description": "Customer support role."
       },
-      "Common": {
-        "DisplayName": "Common",
-        "Description": "Common"
+      "Auditor": {
+        "DisplayName": "Auditor",
+        "Description": "Role overseeing financial transactions."
+      },
+      "User": {
+        "DisplayName": "User",
+        "Description": "System user role."
+      },
+      "PlatinumUser": {
+        "DisplayName": "Platinum User",
+        "Description": "Platinum user role with special privileges."
+      },
+      "EliteUser": {
+        "DisplayName": "Elite User",
+        "Description": "Top-tier privileged elite user role."
       }
     },
     "Fi.Patika.Schema.Model.TransactionType": {
-      "Specific": {
-        "DisplayName": "Transaction Type",
-        "Description": "Transaction Type"
+      "Withdraw": {
+        "DisplayName": "Withdrawal Transaction",
+        "Description": "Withdrawal transaction from the account."
       },
-      "Common": {
-        "DisplayName": "Common",
-        "Description": "Common"
+      "Deposit": {
+        "DisplayName": "Deposit Transaction",
+        "Description": "Deposit transaction to the account."
       }
     },
-    "Fi.Patika.Api.Controller.Name": {
-      "SamplesController": {
-        "DisplayName": "Samples Name",
-        "Description": "Samples Description"
-      },
-      "CustomersController": {
-        "DisplayName": "Customers Name",
-        "Description": "Customers Description"
-      }
+  "Fi.Patika.Api.Controller.Name": {
+    "AccountCreditsController": {
+      "DisplayName": "Account Credits Controller",
+      "Description": "Controller responsible for managing account credits."
     },
-    "Fi.Patika.Api.Entity.Name": {
-      "Sample": {
-        "DisplayName": "Sample Name",
-        "Description": "Sample Description"
-      },
-      "Customer": {
-        "DisplayName": "Customer Name",
-        "Description": "Customer Description"
-      }
+    "AccountsController": {
+      "DisplayName": "Accounts Controller",
+      "Description": "Controller responsible for managing accounts."
     },
-    "Fi.Patika.Api.Field.Name": {
-      "Code": {
-        "DisplayName": "Code",
-        "Description": "Code"
-      },
-      "Name": {
-        "DisplayName": "Name",
-        "Description": "Name"
-      },
-      "Description": {
-        "DisplayName": "Description",
-        "Description": "Description"
-      },
-      "SampleType": {
-        "DisplayName": "SampleType",
-        "Description": "SampleType"
-      },
-      "PhoneNumber": {
-        "DisplayName": "Phone Number",
-        "Description": "Phone Number"
-      },
-      "Email": {
-        "DisplayName": "Email",
-        "Description": "Email"
-      },
-      "DateOfBirth": {
-        "DisplayName": "Date of Birth",
-        "Description": "Date of Birth"
-      },
-      "City": {
-        "DisplayName": "City",
-        "Description": "City"
-      },
-      "State": {
-        "DisplayName": "State",
-        "Description": "State"
-      },
-      "Address": {
-        "DisplayName": "Address",
-        "Description": "Address"
-      }
+    "CreditsController": {
+      "DisplayName": "Credits Controller",
+      "Description": "Controller responsible for managing credits."
+    },
+    "CustomersController": {
+      "DisplayName": "Customers Controller",
+      "Description": "Controller responsible for managing customers."
+    },
+    "DepositAndWithdrawsController": {
+      "DisplayName": "Deposit and Withdraws Controller",
+      "Description": "Controller responsible for managing deposit and withdrawal transactions."
+    },
+    "LoginsController": {
+      "DisplayName": "Logins Controller",
+      "Description": "Controller responsible for managing user logins."
+    },
+    "MoneyTransfersController": {
+      "DisplayName": "Money Transfers Controller",
+      "Description": "Controller responsible for managing money transfers."
+    },
+    "PayeesController": {
+      "DisplayName": "Payees Controller",
+      "Description": "Controller responsible for managing payees."
+    },
+    "SupportRequestsController": {
+      "DisplayName": "Support Requests Controller",
+      "Description": "Controller responsible for managing support requests."
+    },
+    "UsersController": {
+      "DisplayName": "Users Controller",
+      "Description": "Controller responsible for managing users."
+    }
+  },
+  "Fi.Patika.Api.Entity.Name": {
+    "Account": {
+      "DisplayName": "Account",
+      "Description": "Represents the financial assets of a customer."
+    },
+    "AccountCredit": {
+      "DisplayName": "AccountCredit",
+      "Description": "Credit assigned to a customer's account."
+    },
+    "Credit": {
+      "DisplayName": "Credit",
+      "Description": "A loan obtained from a financial institution."
+    },
+    "Customer": {
+      "DisplayName": "Customer",
+      "Description": "Individual involved in financial transactions."
+    },
+    "DepositAndWithdraw": {
+      "DisplayName": "DepositAndWithdraw",
+      "Description": "Record representing deposit and withdrawal transactions on an account."
+    },
+    "Login": {
+      "DisplayName": "Login",
+      "Description": "Record representing a user's login in the system."
+    },
+    "MoneyTransfer": {
+      "DisplayName": "MoneyTransfer",
+      "Description": "Transaction representing the transfer of money between accounts."
+    },
+    "Payee": {
+      "DisplayName": "Payee",
+      "Description": "Person or organization who is the recipient in a payment or transfer."
+    },
+    "SupportRequest": {
+      "DisplayName": "SupportRequest",
+      "Description": "Support request submitted by a customer."
+    },
+    "User": {
+      "DisplayName": "User",
+      "Description": "Individual registered in the system."
+    }
+  },
+  "Fi.Patika.Api.Field.Name": {
+    "Code": {
+      "DisplayName": "Code",
+      "Description": "Code of the language"
+    },
+    "Name": {
+      "DisplayName": "Name",
+      "Description": "Name of the language"
+    },
+    "Description": {
+      "DisplayName": "Description",
+      "Description": "A description associated with an item or record.."
+    },
+    "Balance": {
+      "DisplayName": "Balance",
+      "Description": "The current balance in the account."
+    },
+    "Salary": {
+      "DisplayName": "Salary",
+      "Description": "The monthly salary of the individual."
+    },
+    "BankScore": {
+      "DisplayName": "BankScore",
+      "Description": "The score assigned to the individual by the bank."
+    },
+    "TotailDailyTransferAmount": {
+      "DisplayName": "TotailDailyTransferAmount",
+      "Description": "The total daily transfer amount allowed."
+    },
+    "TotalAmount": {
+      "DisplayName": "TotalAmount",
+      "Description": "The total amount associated with the individual's account."
+    },
+    "MontlyPayment": {
+      "DisplayName": "MontlyPayment",
+      "Description": "The monthly payment amount for a loan."
+    },
+    "RepaymentPeriodMonths": {
+      "DisplayName": "RepaymentPeriodMonths",
+      "Description": "The repayment period for a loan in months."
+    },
+    "LoanDate": {
+      "DisplayName": "LoanDate",
+      "Description": "The date when a loan was initiated."
+    },
+    "PhoneNumber": {
+      "DisplayName": "PhoneNumber",
+      "Description": "The phone number of the individual."
+    },
+    "Email": {
+      "DisplayName": "Email",
+      "Description": "The email address of the individual."
+    },
+    "DateOfBirth": {
+      "DisplayName": "DateOfBirth",
+      "Description": "The date of birth of the individual."
+    },
+    "City": {
+      "DisplayName": "City",
+      "Description": "The city of residence of the individual."
+    },
+    "State": {
+      "DisplayName": "State",
+      "Description": "The state of residence of the individual."
+    },
+    "Address": {
+      "DisplayName": "Address",
+      "Description": "The address of the individual."
+    },
+    "Amount1": {
+      "DisplayName": "Amount1",
+      "Description": "A generic amount field."
+    },
+    "isSucceded": {
+      "DisplayName": "isSucceded",
+      "Description": "A boolean indicating whether an operation was successful."
+    },
+    "LoginTime": {
+      "DisplayName": "LoginTime",
+      "Description": "The time of the last login."
+    },
+    "Comment": {
+      "DisplayName": "Comment",
+      "Description": "A comment associated with a record."
+    },
+    "PaymentDay": {
+      "DisplayName": "PaymentDay",
+      "Description": "The day of the month on which a payment is due."
+    },
+    "isPayment": {
+      "DisplayName": "isPayment",
+      "Description": "A boolean indicating whether a payment was made."
+    },
+    "Subject": {
+      "DisplayName": "Subject",
+      "Description": "The subject of a message or communication."
+    },
+    "isAnswered": {
+      "DisplayName": "isAnswered",
+      "Description": "A boolean indicating whether a question or inquiry was answered."
+    },
+    "Answered": {
+      "DisplayName": "Answered",
+      "Description": "The answer provided for a question or inquiry."
+    },
+    "AnsweredDate": {
+      "DisplayName": "AnsweredDate",
+      "Description": "The date when a question or inquiry was answered."
+    },
+    "PasswordHash": {
+      "DisplayName": "PasswordHash",
+      "Description": "The hash of a user's password."
+    },
+    "PasswordSalt": {
+      "DisplayName": "PasswordSalt",
+      "Description": "The salt used in password hashing."
+    },
+    "RefreshToken": {
+      "DisplayName": "RefreshToken",
+      "Description": "The refresh token used in authentication."
+    },
+    "TokenCreated": {
+      "DisplayName": "TokenCreated",
+      "Description": "The date and time when an authentication token was created."
+    },
+    "TokenExpires": {
+      "DisplayName": "TokenExpires",
+      "Description": "The date and time when an authentication token expires."
     }
   }
+}

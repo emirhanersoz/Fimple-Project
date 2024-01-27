@@ -1,4 +1,4 @@
-2024-01-26T01:16:29.6588909Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
+2024-01-27T01:34:33.5795045Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
  ---> System.AggregateException: One or more errors occurred. (Failed to ping the specified node.) (Failed to ping the specified node.)
  ---> Elasticsearch.Net.PipelineException: Failed to ping the specified node.
  ---> Elasticsearch.Net.PipelineException: An error occurred trying to write the request data to the specified node.
@@ -60,12 +60,12 @@
    at Elasticsearch.Net.NamespacedClientProxy.DoRequest[TResponse](HttpMethod post, String url, PostData body, IRequestParameters params)
    at Elasticsearch.Net.Specification.IndicesApi.LowLevelIndicesNamespace.TemplateExistsForAll[TResponse](String name, IndexTemplateExistsRequestParameters requestParameters)
    at Serilog.Sinks.Elasticsearch.ElasticsearchSinkState.RegisterTemplateIfNeeded()
-2024-01-26T01:16:33.9861541Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
+2024-01-27T01:34:37.9224362Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
  ---> System.AggregateException: One or more errors occurred. (Failed to ping the specified node.) (Failed to ping the specified node.)
  ---> Elasticsearch.Net.PipelineException: Failed to ping the specified node.
  ---> Elasticsearch.Net.PipelineException: An error occurred trying to write the request data to the specified node.
- ---> System.Net.Http.HttpRequestException: Bilinen böyle bir ana bilgisayar yok. (elasticsearch:9200)
- ---> System.Net.Sockets.SocketException (11001): Bilinen böyle bir ana bilgisayar yok.
+ ---> System.Net.Http.HttpRequestException: Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı. (127.0.0.1:9200)
+ ---> System.Net.Sockets.SocketException (10061): Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı.
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
    at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
@@ -90,8 +90,8 @@
    --- End of inner exception stack trace ---
  ---> (Inner Exception #1) Elasticsearch.Net.PipelineException: Failed to ping the specified node.
  ---> Elasticsearch.Net.PipelineException: An error occurred trying to write the request data to the specified node.
- ---> System.Net.Http.HttpRequestException: Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı. (127.0.0.1:9200)
- ---> System.Net.Sockets.SocketException (10061): Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı.
+ ---> System.Net.Http.HttpRequestException: Bilinen böyle bir ana bilgisayar yok. (elasticsearch:9200)
+ ---> System.Net.Sockets.SocketException (11001): Bilinen böyle bir ana bilgisayar yok.
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
    at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
@@ -122,12 +122,12 @@
    at Elasticsearch.Net.NamespacedClientProxy.DoRequest[TResponse](HttpMethod post, String url, PostData body, IRequestParameters params)
    at Elasticsearch.Net.Specification.IndicesApi.LowLevelIndicesNamespace.TemplateExistsForAll[TResponse](String name, IndexTemplateExistsRequestParameters requestParameters)
    at Serilog.Sinks.Elasticsearch.ElasticsearchSinkState.RegisterTemplateIfNeeded()
-2024-01-26T01:16:38.3131992Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
+2024-01-27T01:34:42.2612812Z Failed to create the template. Elasticsearch.Net.ElasticsearchClientException: Maximum number of retries reached, failed over to all the known alive nodes before failing. Call: Status code unknown from: HEAD /
  ---> System.AggregateException: One or more errors occurred. (Failed to ping the specified node.) (Failed to ping the specified node.)
  ---> Elasticsearch.Net.PipelineException: Failed to ping the specified node.
  ---> Elasticsearch.Net.PipelineException: An error occurred trying to write the request data to the specified node.
- ---> System.Net.Http.HttpRequestException: Bilinen böyle bir ana bilgisayar yok. (elasticsearch:9200)
- ---> System.Net.Sockets.SocketException (11001): Bilinen böyle bir ana bilgisayar yok.
+ ---> System.Net.Http.HttpRequestException: Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı. (127.0.0.1:9200)
+ ---> System.Net.Sockets.SocketException (10061): Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı.
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
    at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
@@ -152,8 +152,8 @@
    --- End of inner exception stack trace ---
  ---> (Inner Exception #1) Elasticsearch.Net.PipelineException: Failed to ping the specified node.
  ---> Elasticsearch.Net.PipelineException: An error occurred trying to write the request data to the specified node.
- ---> System.Net.Http.HttpRequestException: Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı. (127.0.0.1:9200)
- ---> System.Net.Sockets.SocketException (10061): Hedef makine etkin olarak reddettiğinden bağlantı kurulamadı.
+ ---> System.Net.Http.HttpRequestException: Bilinen böyle bir ana bilgisayar yok. (elasticsearch:9200)
+ ---> System.Net.Sockets.SocketException (11001): Bilinen böyle bir ana bilgisayar yok.
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
    at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
    at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|281_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)

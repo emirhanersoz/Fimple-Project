@@ -26,6 +26,7 @@ namespace Fi.Patika.Api.Impl.Command
     public class MoneyTransferCommandHandler :
         IFiRequestHandler<CreateMoneyTransferCommand, MoneyTransferOutputModel>,
         IFiRequestHandler<UpdateMoneyTransferCommand, MoneyTransferOutputModel>,
+        IFiRequestHandler<TransferMoneyCommand, MoneyTransferOutputModel>,
         IFiRequestHandler<DeleteMoneyTransferCommand, VoidResult>
     {
         private readonly ISessionContextDI sessionDI;
@@ -33,6 +34,8 @@ namespace Fi.Patika.Api.Impl.Command
         private readonly IMapper mapper;
         private readonly IExceptionFactory exceptionFactory;
         private readonly IJsonStringLocalizer localizer;
+
+        private const decimal totalDailyTransferLimit = 10000;
 
         public MoneyTransferCommandHandler(ISessionContextDI sessionDI, IFiModuleDbContext dbContext,
             IMapper mapper, IExceptionFactory exceptionFactory, IJsonStringLocalizer localizer)
@@ -46,38 +49,7 @@ namespace Fi.Patika.Api.Impl.Command
 
         public async Task<MoneyTransferOutputModel> Handle(CreateMoneyTransferCommand message, CancellationToken cancellationToken)
         {
-            /*sessionDI.ExecutionTrace.InitTrace();
-
-            var fromDbAccount = await dbContext.Set<Account>()
-                .FirstOrDefaultAsync(x => x.Id == message.AccountId, cancellationToken);
-
-            if (message.Model.Amount > fromDbAccount.Balance)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.AccountId, message.DestId);
-
-            var entity = mapper.Map<MoneyTransfer>(message.Model);
-
-            await dbContext.AddAsync(entity, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            return mapper.Map<MoneyTransferOutputModel>(entity);*/
-
-
             sessionDI.ExecutionTrace.InitTrace();
-
-            var fromDbAccount = await dbContext.Set<Account>()
-                                                .FirstOrDefaultAsync(x => x.Id == message.Model.AccountId, cancellationToken);
-
-            var fromDbDescAccount = await dbContext.Set<Account>()
-                                                    .FirstOrDefaultAsync(x => x.Id == message.Model.DestAccountId, cancellationToken);
-
-            if (fromDbAccount == null || fromDbDescAccount == null)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId, message.Model.DestAccountId);
-
-            if (fromDbAccount.Balance < message.Model.Amount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId);
-
-            fromDbAccount.Balance -= message.Model.Amount;
-            fromDbDescAccount.Balance += message.Model.Amount;
 
             var entity = mapper.Map<MoneyTransfer>(message.Model);
 
@@ -125,36 +97,32 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var fromDbAccountId = await dbContext.Set<MoneyTransfer>()
-                                                .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
-
             var fromDbAccount = await dbContext.Set<Account>()
-                                                .FirstOrDefaultAsync(x => x.Id == message.AccountId, cancellationToken);
-
-            var fromDbDescAccountId = await dbContext.Set<MoneyTransfer>()
-                                                .FirstOrDefaultAsync(x => x.DestAccountId == message.DestId, cancellationToken);
+                                                .FirstOrDefaultAsync(x => x.Id == message.Model.AccountId, cancellationToken);
 
             var fromDbDescAccount = await dbContext.Set<Account>()
-                                               .FirstOrDefaultAsync(x => x.Id == message.DestId, cancellationToken);
+                                                    .FirstOrDefaultAsync(x => x.Id == message.Model.DestAccountId, cancellationToken);
 
-            if (fromDbAccountId == null && fromDbDescAccountId == null)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Id, message.AccountId, message.DestId);
+            if (fromDbAccount == null || fromDbDescAccount == null)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId, message.Model.DestAccountId);
 
             if (fromDbAccount.Balance < message.Model.Amount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Id, message.AccountId, message.DestId);
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId, message.Model.Amount);
 
-            fromDbAccount.Balance = fromDbAccount.Balance - message.Model.Amount;
-            fromDbDescAccount.Balance = fromDbDescAccount.Balance + message.Model.Amount;
+            if (fromDbAccount.TotailDailyTransferAmount + message.Model.Amount > totalDailyTransferLimit)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.Amount, message.Model.Amount);
 
-            var updatedFromDbAccountId = mapper.Map<MoneyTransfer>(message.Model);
-            var updatedFromDbDescAccountId = mapper.Map<MoneyTransfer>(message.Model);
 
-            dbContext.Update(fromDbAccountId).CurrentValues.SetValues(updatedFromDbAccountId);
-            dbContext.Update(fromDbDescAccountId).CurrentValues.SetValues(updatedFromDbDescAccountId);
+            fromDbAccount.Balance -= message.Model.Amount;
+            fromDbAccount.TotailDailyTransferAmount += message.Model.Amount;
+            fromDbDescAccount.Balance += message.Model.Amount;
 
+            var entity = mapper.Map<MoneyTransfer>(message.Model);
+
+            await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<MoneyTransferOutputModel>(updatedFromDbAccountId);
+            return mapper.Map<MoneyTransferOutputModel>(entity);
         }
     }
 }

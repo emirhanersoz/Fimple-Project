@@ -24,7 +24,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task Create_IfRequestedNotExist_ReturnsSuccess_WithItem()
+        public async Task CreateAccount_IfRequestedUserAndCustomerExist_ReturnsSuccess_WithItem()
         {
             //Arrange
             const decimal balance = 1000;
@@ -53,19 +53,128 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
                 $"{basePath}", accountInputModel);
 
-            var checkUserResponse = await HttpClient.FiGetTestAsync<UserOutputModel>(
-                 $"api/v1/Patika/Users/{userCreateResponse.Value.Id}", false);
+            // Assert
+            accountCreateResponse.FiShouldBeSuccessStatus();
+            accountCreateResponse.Value.ShouldNotBeNull();
+            accountCreateResponse.Value.Balance.ShouldEqual(balance);
+        }
 
-            var checkCustomerResponse = await HttpClient.FiGetTestAsync<CustomerOutputModel>(
-                $"api/v1/Patika/Customers/{customerCreateResponse.Value.Id}", false);
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateAccount_WhenCalled_ReturnsSuccess_WithUpdatedAccount()
+        {
+            //Arrange
+            const decimal balance = 1000;
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
 
-            var checkAccountResponse = await HttpClient.FiGetTestAsync<AccountOutputModel>(
-                $"{basePath}/{accountCreateResponse.Value.Id}", false);
+            var userInputModel = Builder<UserInputModel>.CreateNew()
+                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            customerInputModel.UserId = 1;
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .With(p => p.Balance = balance)
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+                "api/v1/Patika/Users", userInputModel);
+
+            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+                "api/v1/Patika/Customers", customerInputModel);
+
+            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
+                $"{basePath}", accountInputModel);
+
+            accountInputModel.AccountType = AccountType.Investment;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<AccountInputModel?, AccountOutputModel>(
+                                            $"{basePath}/{accountCreateResponse.Value.Id}", accountInputModel, false);
 
             // Assert
-            checkAccountResponse.FiShouldBeSuccessStatus();
-            checkAccountResponse.Value.ShouldNotBeNull();
-            checkAccountResponse.Value.Balance.ShouldEqual(balance);
+            response.FiShouldBeSuccessStatus();
+            response.Value.ShouldNotBeNull();
+            response.Value.AccountType.ShouldEqual(AccountType.Investment);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteAccountByKey_WhenCalled_ReturnsSuccess()
+        {
+            //Arrange
+            const decimal balance = 1000;
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+            var userInputModel = Builder<UserInputModel>.CreateNew()
+                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            customerInputModel.UserId = 1;
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .With(p => p.Balance = balance)
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+                "api/v1/Patika/Users", userInputModel);
+
+            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+                "api/v1/Patika/Customers", customerInputModel);
+
+            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
+                $"{basePath}", accountInputModel);
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync(
+                                            $"{basePath}/{accountCreateResponse.Value.Id}");
+
+            // Assert
+            response.FiShouldBeSuccessStatus();
+            TestDbContext.Set<Account>().FirstOrDefault(p => p.Id == accountCreateResponse.Value.Id).ShouldBeNull();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetAccountByKey_IfRequestedItemExists_ReturnsSuccess_WithItem()
+        {
+            //Arrange
+            const decimal balance = 1000;
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+            var userInputModel = Builder<UserInputModel>.CreateNew()
+                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            customerInputModel.UserId = 1;
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .With(p => p.Balance = balance)
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+                "api/v1/Patika/Users", userInputModel);
+
+            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+                "api/v1/Patika/Customers", customerInputModel);
+
+            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
+                $"{basePath}", accountInputModel);
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<AccountOutputModel>(
+                                            $"{basePath}/{accountCreateResponse.Value.Id}", false);
+
+            // Assert
+            response.FiShouldBeSuccessStatus();
+            response.Value.ShouldNotBeNull();
+            response.Value.Id.ShouldEqual(accountCreateResponse.Value.Id);
         }
     }
 }

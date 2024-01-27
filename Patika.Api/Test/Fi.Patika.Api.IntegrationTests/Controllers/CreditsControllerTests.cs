@@ -1,7 +1,10 @@
-﻿using Fi.Patika.Api.IntegrationTests.Initialization;
+﻿using Fi.Infra.Utility;
+using Fi.Patika.Api.Domain.Entity;
+using Fi.Patika.Api.IntegrationTests.Initialization;
 using Fi.Patika.Schema.Model;
 using Fi.Test.Extensions;
 using FizzWare.NBuilder;
+using Should;
 using StructureMap.Diagnostics.TreeView;
 using Xunit;
 using Xunit.Abstractions;
@@ -12,7 +15,6 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     {
         private const string basePath = "api/v1/Patika/Credits";
         private HelperMethodsForTests helperMethodsForTests;
-
         private readonly ITestOutputHelper output;
 
         public CreditsControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
@@ -22,13 +24,15 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task Create_IfRequestedNotExist_ReturnsSuccess_WithItem()
+        public async Task CreateCredit_IfRequestedCreditNotExist_ReturnsSuccess_WithItem()
         {
+           
             // Arrange
             var inputModel = Builder<CreditInputModel>.CreateNew()
                 .With(p => p.TotalAmount = 10000).With(p => p.MontlyPayment = 1000)
                 .With(p => p.RepaymentPeriodMonths = 10)
                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            inputModel.LoanDate = DateTimeHelper.UtcNow;
 
             // Act
             var responsePost = await HttpClient.FiPostTestAsync<CreditInputModel, CreditOutputModel>(
@@ -39,10 +43,11 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
 
             // Assert
             responsePost.FiShouldBeSuccessStatus();
+            output.WriteLine(inputModel.LoanDate.ToString());
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task GetCreditWithAccountIdAndCreditId_IfRequestedNotExist_ReturnsSuccess_WithItem()
+        public async Task GetCreditForAccount_IfRequestedCreditAndAccountNotExist_ReturnsSuccess_WithItem()
         {
             //Arrange
             const decimal balance = 1000;
@@ -88,8 +93,79 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             var accountCreditCreateResponsePost = await HttpClient.FiPostTestAsync<AccountCreditInputModel, AccountCreditOutputModel>(
                 "api/v1/Patika/AccountCredits", accountCreditInputModel);
 
+            var loanCreditResponsePost = await HttpClient.FiPostTestAsync<AccountCreditInputModel, AccountCreditOutputModel>(
+               $"{basePath}/getCredit", accountCreditInputModel);
+
             // Assert
             accountCreditCreateResponsePost.FiShouldBeSuccessStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteCreditByKey_WhenCalled_ReturnsSuccess()
+        {
+            // Arrange
+            var inputModel = Builder<CreditInputModel>.CreateNew()
+                .With(p => p.TotalAmount = 10000).With(p => p.MontlyPayment = 1000)
+                .With(p => p.RepaymentPeriodMonths = 10)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            inputModel.LoanDate = DateTimeHelper.UtcNow;
+
+            var responsePost = await HttpClient.FiPostTestAsync<CreditInputModel, CreditOutputModel>(
+                                            $"{basePath}", inputModel);
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync(
+                                            $"{basePath}/{responsePost.Value.Id}");
+
+            // Assert
+            response.FiShouldBeSuccessStatus();
+            TestDbContext.Set<Credit>().FirstOrDefault(p => p.Id == responsePost.Value.Id).ShouldBeNull();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetCreditByKey_IfRequestedItemExists_ReturnsSuccess_WithItem()
+        {
+            // Arrange
+            var inputModel = Builder<CreditInputModel>.CreateNew()
+                .With(p => p.TotalAmount = 10000).With(p => p.MontlyPayment = 1000)
+                .With(p => p.RepaymentPeriodMonths = 10)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            inputModel.LoanDate = DateTimeHelper.UtcNow;
+
+            var responsePost = await HttpClient.FiPostTestAsync<CreditInputModel, CreditOutputModel>(
+                                            $"{basePath}", inputModel);
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<CreditOutputModel>(
+                                            $"{basePath}/{responsePost.Value.Id}", false);
+
+            // Assert
+            response.FiShouldBeSuccessStatus();
+            response.Value.ShouldNotBeNull();
+            response.Value.Id.ShouldEqual(responsePost.Value.Id);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetCreditsByParameters_IfItemsExist_ReturnsSuccess_WithList()
+        {
+            // Arrange
+            var inputModel = Builder<CreditInputModel>.CreateNew()
+                .With(p => p.TotalAmount = 10000).With(p => p.MontlyPayment = 1000)
+                .With(p => p.RepaymentPeriodMonths = 10)
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            inputModel.LoanDate = DateTimeHelper.UtcNow;
+
+            var responsePost = await HttpClient.FiPostTestAsync<CreditInputModel, CreditOutputModel>(
+                                            $"{basePath}", inputModel);
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<List<CreditOutputModel>>(
+                                            $"{basePath}/ByParameters", false);
+
+            // Assert
+            response.FiShouldBeSuccessStatus();
+            response.Value.ShouldNotBeNull();
+            response.Value.Count.ShouldBeGreaterThan(0);
         }
     }
 }

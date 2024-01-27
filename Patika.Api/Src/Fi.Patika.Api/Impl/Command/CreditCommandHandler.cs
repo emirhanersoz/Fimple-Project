@@ -20,6 +20,7 @@ using Fi.Persistence.Relational.Interfaces;
 using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
 namespace Fi.Patika.Api.Impl.Command
 {
@@ -89,6 +90,5 @@ namespace Fi.Patika.Api.Impl.Command
 
             return new VoidResult();
         }
-
     }
 }

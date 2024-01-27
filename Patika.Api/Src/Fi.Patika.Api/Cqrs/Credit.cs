@@ -7,6 +7,8 @@ namespace Fi.Patika.Api.Cqrs
 {
     public record CreateCreditCommand(CreditInputModel Model) : CommandBase<CreditOutputModel>;
 
+    public record GetLoanCreditCommand(int accountId, int creditId) : CommandBase<AccountCreditOutputModel>;
+
     public record UpdateCreditCommand(int Id, CreditInputModel Model) : CommandBase<CreditOutputModel>;
 
     public record DeleteCreditCommand(int Id) : CommandBase<VoidResult>;
