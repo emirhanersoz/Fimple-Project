@@ -9,7 +9,9 @@
     "Fi.Infra.Exceptions.FiBusinessReason": {
       "Welcome Localization": "Welcome Localization",
       "A sample with same Code already exists. {0} ({1}).": "A sample with same Code already exists. {0} ({1}).",
-      "Account balance is insufficient.{0} ({1}).": "Account balance is insufficient.{0} ({1})."
+      "Account balance is insufficient.{0} ({1}).": "Account balance is insufficient.{0} ({1}).",
+      "Daily transfer limits exceed. {0} ({1)}.": "Daily transfer limits exceed. {0} ({1)}.",
+      "Single transfer limits exceed. {0} ({1)}.": "Single transfer limits exceed. {0} ({1)}."
     }
   },
   "Fi.Patika.Schema.Model.AccountType": {

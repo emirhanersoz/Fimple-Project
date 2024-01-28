@@ -15,14 +15,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class LoginsControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/Logins";
-        private HelperMethodsForTests helperMethodsForTests;
-
-        private readonly ITestOutputHelper output;
 
         public LoginsControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -67,8 +62,6 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
             response.Value.Equals(loginInputModel.LoginTime);
-
-            output.WriteLine(response.Value.LoginTime.ToString());
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -137,6 +130,82 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             // Assert
             response.FiShouldBeSuccessStatus();
             TestDbContext.Set<Login>().FirstOrDefault(p => p.Id == loginCreateResponse.Value.Id).ShouldBeNull();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateLogin_IfNotFoundUser_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
+
+            var invalidModel = Builder<LoginInputModel>.CreateNew()
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            invalidModel.UserId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
+                                $"{basePath}", invalidModel);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentLogin_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
+
+            var loginInputModel = Builder<LoginInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            loginInputModel.UserId = 1;
+
+            int nonExistentloginId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<LoginInputModel?, LoginOutputModel>(
+                                            $"{basePath}/{nonExistentloginId}", new LoginInputModel(), false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentLogin_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
+
+            var loginInputModel = Builder<LoginInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+           loginInputModel.UserId = 1;
+
+            int nonExistentLoginId = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentLoginId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentLoginByKey_IfRequestedItemNotExist_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
+
+            var loginInputModel = Builder<LoginInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            loginInputModel.UserId = 1;
+
+            int nonExistentLoginId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<LoginOutputModel>($"{basePath}/{nonExistentLoginId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
         }
     }
 }

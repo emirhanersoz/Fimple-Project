@@ -62,14 +62,14 @@ public class PatikaApplicationFactory : FiIntegrationTestApplicationFactory<Star
         entityAccount.Id = 1;
         entityAccount.CustomerId = 1;
         entityAccount.Salary = 10000;
-        entityAccount.Balance = 10000;
+        entityAccount.Balance = 70000;
 
         var entityDescAccount = Builder<Account>.CreateNew()
             .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
         entityDescAccount.Id = 2;
         entityDescAccount.CustomerId = 1;
         entityDescAccount.Salary = 20000;
-        entityDescAccount.Balance = 20000;
+        entityDescAccount.Balance = 25000;
 
         var entityMoneyTransfer = Builder<MoneyTransfer>.CreateNew()
             .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
@@ -81,12 +81,12 @@ public class PatikaApplicationFactory : FiIntegrationTestApplicationFactory<Star
             .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
         entityPayee.Id = 1;
         entityPayee.AccountId = 1;
-        /*
+        
         var entityDepositAndWithdraw = Builder<DepositAndWithdraw>.CreateNew()
             .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
         entityDepositAndWithdraw.Id = 1;
         entityDepositAndWithdraw.AccountId = 1;
-        */
+        
         var entityCredit = Builder<Credit>.CreateNew()
             .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
         entityCredit.Id = 1;
@@ -109,7 +109,7 @@ public class PatikaApplicationFactory : FiIntegrationTestApplicationFactory<Star
         await dbContext.AddAsync(entityDescAccount);
         await dbContext.AddAsync(entityMoneyTransfer);
         await dbContext.AddAsync(entityPayee);
-        //await dbContext.AddAsync(entityDepositAndWithdraw);
+        await dbContext.AddAsync(entityDepositAndWithdraw);
         await dbContext.AddAsync(entityCredit);
         await dbContext.AddAsync(entityAccountCredit);
         await dbContext.SaveChangesAsync();

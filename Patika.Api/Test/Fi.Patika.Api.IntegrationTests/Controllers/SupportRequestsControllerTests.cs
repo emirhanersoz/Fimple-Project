@@ -4,6 +4,7 @@ using Fi.Patika.Schema.Model;
 using Fi.Test.Extensions;
 using FizzWare.NBuilder;
 using Should;
+using System.Net;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,13 +13,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class SupportRequestsControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/SupportRequests";
-        private readonly ITestOutputHelper output;
-        private HelperMethodsForTests helperMethodsForTests;
 
         public SupportRequestsControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -131,6 +128,62 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             // Assert
             response.FiShouldBeSuccessStatus();
             TestDbContext.Set<SupportRequest>().FirstOrDefault(p => p.Id == supportRequestCreateResponse.Value.Id).ShouldBeNull();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateSupportRequest_InvalidModelNotFoundtCustomer_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<SupportRequest>();
+
+            var invalidModel = Builder<SupportRequestInputModel>.CreateNew()
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            invalidModel.CustomerId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPostTestAsync<SupportRequestInputModel, SupportRequestOutputModel>(
+                                $"{basePath}", invalidModel);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentSupportRequest_ReturnsBadRequestStatus()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<SupportRequest>();
+
+            var supportRequestInputModel = Builder<SupportRequestInputModel>.CreateNew()
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            supportRequestInputModel.CustomerId = 1;
+
+            int nonExistentRequestId = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentRequestId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentSupportRequest_ReturnsBadRequestStatus()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<SupportRequest>();
+
+            var supportRequestInputModel = Builder<SupportRequestInputModel>.CreateNew()
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            supportRequestInputModel.CustomerId = 1;
+
+            int nonExistentRequestId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<SupportRequestOutputModel>($"{basePath}/{nonExistentRequestId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
         }
     }
 }

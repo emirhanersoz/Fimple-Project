@@ -104,14 +104,13 @@ namespace Fi.Patika.Api.Impl.Command
                                                     .FirstOrDefaultAsync(x => x.Id == message.Model.DestAccountId, cancellationToken);
 
             if (fromDbAccount == null || fromDbDescAccount == null)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId, message.Model.DestAccountId);
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId);
 
             if (fromDbAccount.Balance < message.Model.Amount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId, message.Model.Amount);
+                throw exceptionFactory.BadRequestEx(ErrorCodes.NotEnoughBalance, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId);
 
             if (fromDbAccount.TotailDailyTransferAmount + message.Model.Amount > totalDailyTransferLimit)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.Amount, message.Model.Amount);
-
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedTransferLimit, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Model.AccountId);
 
             fromDbAccount.Balance -= message.Model.Amount;
             fromDbAccount.TotailDailyTransferAmount += message.Model.Amount;

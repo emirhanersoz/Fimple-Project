@@ -7,6 +7,8 @@ using FizzWare.NBuilder;
 using Newtonsoft.Json;
 using OpenTelemetry.Trace;
 using Should;
+using System.Collections;
+using System.Net;
 using System.Security.Cryptography;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,11 +20,8 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         private const string basePath = "api/v1/Patika/Users";
         private HelperMethodsForTests helperMethodsForTests;
 
-        private readonly ITestOutputHelper output;
-
         public UsersControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
             helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
@@ -121,6 +120,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         {
             // Arrange
             byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
             var inputModel = Builder<UserInputModel>.CreateNew()
                 .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray)
                                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
@@ -136,6 +136,77 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
             response.Value.Count.ShouldBeGreaterThan(0);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateUser_WithInvalidModelWithoutHashKey_ReturnsBadRequest()
+        {
+            // Arrange
+            var invalidModel = Builder<UserInputModel>.CreateNew()
+                                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            // Act
+            var response = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
+                                $"{basePath}", invalidModel);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+        
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentUser_ReturnsShouldBeNull()
+        {
+            // Arrange
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+            var nonExistentUserId = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray)
+                                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            nonExistentUserId.Id = 9999;
+            
+            // Act
+            var response = await HttpClient.FiPutTestAsync<UserInputModel?, UserOutputModel>(
+                                $"{basePath}/{nonExistentUserId}", new UserInputModel(), false);
+
+            // Assert
+           response.ShouldBeNull();
+        }
+        
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentUser_ReturnsNotFound()
+        {
+            // Arrange
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+            var nonExistentUserId = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray)
+                                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            nonExistentUserId.Id = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentUserId}");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.NotNull(response);
+        }
+        
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentUser_ReturnsShouldBeNull()
+        {
+            // Arrange
+            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
+
+            var nonExistentUserId = Builder<UserInputModel>.CreateNew()
+                .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray)
+                                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            nonExistentUserId.Id = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<UserOutputModel>($"{basePath}/{nonExistentUserId}", false);
+
+            // Assert
+            response.ShouldBeNull();
         }
     }
 }

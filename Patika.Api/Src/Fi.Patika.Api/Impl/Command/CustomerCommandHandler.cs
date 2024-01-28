@@ -63,7 +63,9 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<Customer>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
+
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Customer"], message.Id);
 

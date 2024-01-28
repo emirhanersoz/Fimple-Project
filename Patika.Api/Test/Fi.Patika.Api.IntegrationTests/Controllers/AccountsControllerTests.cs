@@ -14,13 +14,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class AccountsControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/Accounts";
-        private readonly ITestOutputHelper output;
-        private HelperMethodsForTests helperMethodsForTests;
 
         public AccountsControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -107,5 +103,82 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.Value.ShouldNotBeNull();
             response.Value.Id.ShouldEqual(accountCreateResponse.Value.Id);
         }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateAccount_IfNotFoundCustomer_ReturnsBadRequest()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Account>();
+
+            var invalidModel = Builder<AccountInputModel>.CreateNew()
+                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            invalidModel.CustomerId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
+                                $"{basePath}", invalidModel);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentAccount_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Account>();
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            int nonExistentAccountId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<AccountInputModel?, AccountOutputModel>(
+                                            $"{basePath}/{nonExistentAccountId}", new AccountInputModel(), false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentAccount_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Account>();
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            int nonExistentAccountId = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentAccountId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentAccountByKey_IfRequestedItemNotExist_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Account>();
+
+            var accountInputModel = Builder<AccountInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            accountInputModel.CustomerId = 1;
+
+            int nonExistentAccountId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<AccountOutputModel>($"{basePath}/{nonExistentAccountId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
     }
 }

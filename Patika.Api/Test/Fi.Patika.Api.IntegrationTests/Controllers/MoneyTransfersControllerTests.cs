@@ -14,13 +14,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class MoneyTransfersControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/MoneyTransfers";
-        private readonly ITestOutputHelper output;
-        private HelperMethodsForTests helperMethodsForTests;
 
         public MoneyTransfersControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -109,6 +105,146 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
             response.Value.Id.ShouldEqual(moneytTransferCreateResponse.Value.Id);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateTransfer_IfSenderAccountNotFound_ReturnsBadRequest()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            moneyTransferInputModel.AccountId = 9999;
+
+            //Act
+            var moneyTransferCreateResponse = await HttpClient.FiPostTestAsync<MoneyTransferInputModel, MoneyTransferOutputModel>(
+                $"{basePath}/transfer", moneyTransferInputModel);
+
+            // Assert
+            moneyTransferCreateResponse.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateTransfer_IfDestinationAccountNotFound_ReturnsBadRequest()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            moneyTransferInputModel.DestAccountId = 9999;
+
+            //Act
+            var moneyTransferCreateResponse = await HttpClient.FiPostTestAsync<MoneyTransferInputModel, MoneyTransferOutputModel>(
+                $"{basePath}/transfer", moneyTransferInputModel);
+
+            // Assert
+            moneyTransferCreateResponse.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateTransfer_NotEnoughBalance_ReturnsBadRequest()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+
+            moneyTransferInputModel.AccountId = 1;
+            moneyTransferInputModel.Amount = 90000;
+
+            // Act
+            var moneyTransferCreateResponse = await HttpClient.FiPostTestAsync<MoneyTransferInputModel, MoneyTransferOutputModel>(
+                    $"{basePath}/transfer", moneyTransferInputModel);
+
+            // Assert
+            moneyTransferCreateResponse.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreateTransfer_IfDailyLimitExceeded_ReturnsBadRequest()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var invalidAccountModel = Builder<Account>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            invalidAccountModel.Balance = 50000;
+            invalidAccountModel.TotailDailyTransferAmount = 40000;
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            moneyTransferInputModel.AccountId = 9999;
+            moneyTransferInputModel.Amount = 20000;
+
+            // Act
+            var moneyTransferCreateResponse = await HttpClient.FiPostTestAsync<MoneyTransferInputModel, MoneyTransferOutputModel>(
+                    $"{basePath}/transfer", moneyTransferInputModel);
+
+            // Assert
+            moneyTransferCreateResponse.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentMoneyTransfer_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            moneyTransferInputModel.AccountId = 1;
+
+            int nonExistentMoneyTransferId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<MoneyTransferInputModel?, MoneyTransferOutputModel>(
+                                            $"{basePath}/{nonExistentMoneyTransferId}", new MoneyTransferInputModel(), false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentMoneyTransfer_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            moneyTransferInputModel.AccountId = 1;
+
+            int nonExistentMoneyTransferId = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentMoneyTransferId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentMoneyTransferByKey_IfRequestedItemNotExist_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<MoneyTransfer>();
+
+            var moneyTransferInputModel = Builder<MoneyTransferInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            moneyTransferInputModel.AccountId = 1;
+
+            int nonExistentMoneyTransferId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<MoneyTransferOutputModel>($"{basePath}/{nonExistentMoneyTransferId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
         }
     }
 }

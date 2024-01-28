@@ -21,6 +21,7 @@ using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using Microsoft.Identity.Client;
 
 namespace Fi.Patika.Api.Impl.Command
 {

@@ -24,15 +24,8 @@ public class CustomersControllerTests : PatikaScenariosBase
 {
     private const string basePath = "api/v1/Patika/Customers";
 
-    //Sonradan eklendi silenecek
-    private readonly ITestOutputHelper output;
-    private HelperMethodsForTests helperMethodsForTests;
-
-
     public CustomersControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
     {
-        this.output = output;
-        helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
     }
 
     [Fact, Trait("Category", "Integration")]
@@ -125,5 +118,81 @@ public class CustomersControllerTests : PatikaScenariosBase
         response.FiShouldBeSuccessStatus();
         response.Value.ShouldNotBeNull();
         response.Value.Id.ShouldEqual(customerCreateResponse.Value.Id);
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task CreateCustomer_IfNotFoundUser_ReturnsBadRequest()
+    {
+        // Arrange
+        await TestDbContext.EnsureEntityIsEmpty<Customer>();
+
+        var invalidModel = Builder<CustomerInputModel>.CreateNew()
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        invalidModel.UserId = 9999;
+
+        // Act
+        var response = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
+                            $"{basePath}", invalidModel);
+
+        // Assert
+        response.FiShouldBeBadRequestStatus();
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task UpdateNonexistentCustomer_WhenCalled_ReturnsBadRequestStatus()
+    {
+        // Arrange
+        await TestDbContext.EnsureEntityIsEmpty<Customer>();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+
+        int nonExistentCustomerId = 9999;
+
+        // Act
+        var response = await HttpClient.FiPutTestAsync<CustomerInputModel?, CustomerOutputModel>(
+                                        $"{basePath}/{nonExistentCustomerId}", new CustomerInputModel(), false);
+
+        // Assert
+        response.FiShouldBeBadRequestStatus();
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task DeleteNonexistentCustomer_WhenCalled_ReturnsBadRequestStatus()
+    {
+        // Arrange
+        await TestDbContext.EnsureEntityIsEmpty<Customer>();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+
+        int nonExistentCustomerId = 9999;
+
+        // Act
+        var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentCustomerId}");
+
+        // Assert
+        response.FiShouldBeBadRequestStatus();
+    }
+
+    [Fact, Trait("Category", "Integration")]
+    public async Task GetNonexistentCustomerByKey_IfRequestedItemNotExist_ReturnsBadRequestStatus()
+    {
+        // Arrange
+        await TestDbContext.EnsureEntityIsEmpty<Customer>();
+
+        var customerInputModel = Builder<CustomerInputModel>.CreateNew()
+                 .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        customerInputModel.UserId = 1;
+
+        int nonExistentCustomerId = 9999;
+
+        // Act
+        var response = await HttpClient.FiGetTestAsync<CustomerOutputModel>($"{basePath}/{nonExistentCustomerId}", false);
+
+        // Assert
+        response.FiShouldBeBadRequestStatus();
     }
 }

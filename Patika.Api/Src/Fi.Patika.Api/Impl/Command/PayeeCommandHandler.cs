@@ -68,6 +68,7 @@ namespace Fi.Patika.Api.Impl.Command
             var fromDb = await dbContext.Set<Payee>()
                                         .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
+
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id);
 
@@ -95,7 +96,7 @@ namespace Fi.Patika.Api.Impl.Command
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id);
 
             if (fromDbPayee.Account.Balance < message.Model.Amount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id, fromDbPayee.Account.Balance);
+                throw exceptionFactory.BadRequestEx(ErrorCodes.NotEnoughBalance, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id, fromDbPayee.Account.Balance);
 
             if (message.Model.isPayment == true)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id, message.Model.isPayment);

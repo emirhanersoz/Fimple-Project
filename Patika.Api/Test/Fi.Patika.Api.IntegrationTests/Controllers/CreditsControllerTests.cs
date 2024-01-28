@@ -14,13 +14,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class CreditsControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/Credits";
-        private HelperMethodsForTests helperMethodsForTests;
-        private readonly ITestOutputHelper output;
 
         public CreditsControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -43,7 +39,6 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
 
             // Assert
             responsePost.FiShouldBeSuccessStatus();
-            output.WriteLine(inputModel.LoanDate.ToString());
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -143,6 +138,64 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
             response.Value.Count.ShouldBeGreaterThan(0);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentCredit_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Credit>();
+
+            var creditInputModel = Builder<CreditInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            creditInputModel.Id = 1;
+
+            int nonExistentCreditId = 9999;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<CreditInputModel?, CreditOutputModel>(
+                                            $"{basePath}/{nonExistentCreditId}", new CreditInputModel(), false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentCredit_WhenCalled_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Credit>();
+
+            var creditInputModel = Builder<CreditInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            creditInputModel.Id = 1;
+
+            int nonExistentCreditId = 9999;
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentCreditId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentCreditByKey_IfRequestedItemNotExist_ReturnsBadRequestStatus()
+        {
+            // Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Credit>();
+
+            var creditInputModel = Builder<CreditInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            creditInputModel.Id = 1;
+
+            int nonExistentCreditId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<CreditOutputModel>($"{basePath}/{nonExistentCreditId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
         }
     }
 }

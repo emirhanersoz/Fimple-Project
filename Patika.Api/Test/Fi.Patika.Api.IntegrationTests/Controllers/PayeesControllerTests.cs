@@ -12,13 +12,9 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
     public class PayeesControllerTests : PatikaScenariosBase
     {
         private const string basePath = "api/v1/Patika/Payees";
-        private readonly ITestOutputHelper output;
-        private HelperMethodsForTests helperMethodsForTests;
 
         public PayeesControllerTests(ITestOutputHelper output, PatikaApplicationFactory fiTestApplicationFactory) : base(fiTestApplicationFactory)
         {
-            this.output = output;
-            helperMethodsForTests = new HelperMethodsForTests(fiTestApplicationFactory);
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -66,7 +62,6 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.Value.isPayment.ShouldEqual(true);
 
             var temp = await TestDbContext.FindAsync<Account>(response.Value.AccountId);
-            output.WriteLine(responseAccount.Value.Balance.ToString());
         }
 
         [Fact, Trait("Category", "Integration")]
@@ -137,6 +132,118 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
             response.Value.Id.ShouldEqual(payeeCreateResponse.Value.Id);
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task CreatePayee_IfRequestedCustomerAndAccountNotExist_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 9999;
+
+            //Act
+            var payeeCreateResponse = await HttpClient.FiPostTestAsync<PayeeInputModel, PayeeOutputModel>(
+                $"{basePath}", payeeInputModel);
+
+            // Assert
+            payeeCreateResponse.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task PaymentPayee_IfNotEnoughBalanceAccount_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 1;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<PayeeInputModel, PayeeOutputModel>(
+                                            $"{basePath}/Payment/{payeeInputModel.Id}", new PayeeInputModel { Amount = 10000000 }, false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task PaymentPayee_IfisPaymentTrue_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 1;
+
+            // Act
+            var response = await HttpClient.FiPutTestAsync<PayeeInputModel, PayeeOutputModel>(
+                                            $"{basePath}/Payment/{payeeInputModel.Id}", new PayeeInputModel { isPayment = true }, false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task UpdateNonexistentPayee_WhenCalled_ReturnsBadRequest()
+        {
+            // Arrange
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 1;
+
+            int nonExistentPayeeId = 9999;
+            // Act
+            var response = await HttpClient.FiPutTestAsync<PayeeInputModel?, PayeeOutputModel>(
+                                            $"{basePath}/{nonExistentPayeeId}", new PayeeInputModel(), false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task DeleteNonexistentPayee_WhenCalled_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 1;
+
+            int nonExistentPayeeId = 9999; // Varolmayan bir payee ID'si
+
+            // Act
+            var response = await HttpClient.FiDeleteTestAsync($"{basePath}/{nonExistentPayeeId}");
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
+        }
+
+        [Fact, Trait("Category", "Integration")]
+        public async Task GetNonexistentPayeeByKey_IfRequestedItemNotExist_ReturnsBadRequest()
+        {
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
+
+            var payeeInputModel = Builder<PayeeInputModel>.CreateNew()
+                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            payeeInputModel.AccountId = 1;
+
+            int nonExistentPayeeId = 9999;
+
+            // Act
+            var response = await HttpClient.FiGetTestAsync<PayeeOutputModel>($"{basePath}/{nonExistentPayeeId}", false);
+
+            // Assert
+            response.FiShouldBeBadRequestStatus();
         }
     }
 }

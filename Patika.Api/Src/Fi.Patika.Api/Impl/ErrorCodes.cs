@@ -1,4 +1,5 @@
 using Fi.Infra.Exceptions;
+using System.Collections.Generic;
 
 namespace Fi.Patika.Api.Impl
 {
@@ -9,5 +10,11 @@ namespace Fi.Patika.Api.Impl
 
         public static FiBusinessReason NotEnoughBalance => new FiBusinessReason(1,
             "Account balance is insufficient. {0} ({1)}.");
+
+        public static FiBusinessReason ExceedTransferLimit => new FiBusinessReason(1,
+            "Daily transfer limits exceed. {0} ({1)}.");
+
+        public static FiBusinessReason ExceedSinlgleTransferLimit => new FiBusinessReason(1,
+            "Single transfer limits exceed. {0} ({1)}.");
     }
 }

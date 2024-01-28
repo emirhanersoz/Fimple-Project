@@ -40,7 +40,7 @@ namespace Fi.Patika.Api.Impl.Command
         private readonly IExceptionFactory exceptionFactory;
         private readonly IJsonStringLocalizer localizer;
 
-        private const decimal dailySingleTransactionLimit = 20000;
+        private const decimal dailySingleTransactionLimit = 35000;
         private const decimal dailyTotalTransactionLimit = 50000;
 
         public DepositAndWithdrawCommandHandler(ISessionContextDI sessionDI, IFiModuleDbContext dbContext,
@@ -56,6 +56,9 @@ namespace Fi.Patika.Api.Impl.Command
         public async Task<DepositAndWithdrawOutputModel> Handle(CreateDepositAndWithdrawCommand message, CancellationToken cancellationToken)
         {
             sessionDI.ExecutionTrace.InitTrace();
+
+            if (message.Model.Amount < 0)
+                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"]);
 
             var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<DepositAndWithdrawInputModel, DepositAndWithdraw, DepositAndWithdrawTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
@@ -110,19 +113,22 @@ namespace Fi.Patika.Api.Impl.Command
             var fromDb = await dbContext.Set<DepositAndWithdraw>()
                                         .Include(x => x.Translations)
                                         .Include(p => p.Account)
-                                        .FirstOrDefaultAsync(x => x.Id == message.Model.Id, cancellationToken);
+                                        .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
 
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
-            if (message.Model.Amount > dailySingleTransactionLimit)
+            if (message.Model.Amount < 0)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+
+            if (message.Model.Amount > dailySingleTransactionLimit)
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedSinlgleTransferLimit, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
             if (message.Model.Amount + fromDb.Account.TotailDailyTransferAmount > dailyTotalTransactionLimit)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedTransferLimit, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
             if (fromDb.Account.TotailDailyTransferAmount > message.Model.Amount + fromDb.Account.TotailDailyTransferAmount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedTransferLimit, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
             fromDb.Account.Balance += message.Model.Amount;
             fromDb.Account.TotailDailyTransferAmount += message.Model.Amount;
@@ -150,19 +156,19 @@ namespace Fi.Patika.Api.Impl.Command
             var fromDb = await dbContext.Set<DepositAndWithdraw>()
                             .Include(x => x.Translations)
                             .Include(p => p.Account)
-                            .FirstOrDefaultAsync(x => x.Id == message.Model.Id, cancellationToken);
+                            .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
 
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
-            if (message.Model.Amount > dailySingleTransactionLimit)
+            if (message.Model.Amount < 0)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+
+            if (message.Model.Amount > dailySingleTransactionLimit)
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedSinlgleTransferLimit, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
             if (message.Model.Amount + fromDb.Account.TotailDailyTransferAmount > dailyTotalTransactionLimit)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
-
-            if (fromDb.Account.TotailDailyTransferAmount > message.Model.Amount + fromDb.Account.TotailDailyTransferAmount)
-                throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
+                throw exceptionFactory.BadRequestEx(ErrorCodes.ExceedTransferLimit, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
 
             if (message.Model.Amount > fromDb.Account.Balance)
                 throw exceptionFactory.BadRequestEx(ErrorCodes.NotEnoughBalance, localizer[FiLocalizedStringType.EntityName, "DepositAndWithdraw"], message.Id);
