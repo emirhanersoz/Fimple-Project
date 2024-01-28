@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("2118ac55-22cb-4876-9e0e-01263fc3e7e3")]
-        [ApiAuthorizationAttribute(ScopeKeys.View_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.View_Login)]
         [HttpGet("{Id:int}")]
         public async Task<ApiResponse<LoginOutputModel>> GetByKey(int Id)
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("0c148e71-cb32-4d53-a8db-a1f02a8026e5")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_Login)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<LoginOutputModel>>> GetByParameters()
         {
@@ -49,7 +49,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("51c4f249-2f54-4569-90f8-4f15a65768d8")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Login)]
         [HttpPost]
         public async Task<ApiResponse<LoginOutputModel>> Create([FromBody]LoginInputModel model)
         {
@@ -61,7 +61,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("e025e7e1-ee85-4a9b-a1cd-fb6c0d26a295")]
-        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_Login)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<LoginOutputModel>> Update(int Id, [FromBody]LoginInputModel model)
         {
@@ -75,7 +75,7 @@ namespace Fi.Patika.Api.Controllers
         //If you really need delete api, take the [OnlyForDevelopment] tag as comment. Or you can delete the API completely.
         [OnlyForDevelopment]
         [ApiKey("36835544-759e-4e13-b4b9-603e78396e86")]
-        [ApiAuthorizationAttribute(ScopeKeys.Delete_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Delete_Login)]
         [HttpDelete("{Id:int}")]
         public async Task<ApiResponse> DeleteByKey(int Id)
         {

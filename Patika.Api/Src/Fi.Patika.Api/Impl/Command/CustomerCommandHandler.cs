@@ -48,12 +48,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<Customer>(message.Model);
-            
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<CustomerInputModel, Customer, CustomerTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CustomerOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<CustomerOutputModel, Customer, CustomerTranslation>(sessionDI, entity);
         }
 
         public async Task<CustomerOutputModel> Handle(UpdateCustomerCommand message, CancellationToken cancellationToken)
@@ -67,12 +67,13 @@ namespace Fi.Patika.Api.Impl.Command
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Customer"], message.Id);
 
-            var mapped = mapper.Map<Customer>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<CustomerTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<CustomerInputModel, Customer, CustomerTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CustomerOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<CustomerOutputModel, Customer, CustomerTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteCustomerCommand message, CancellationToken cancellationToken)
@@ -89,6 +90,5 @@ namespace Fi.Patika.Api.Impl.Command
 
             return new VoidResult();
         }
-
     }
 }

@@ -48,12 +48,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<Login>(message.Model);
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<LoginInputModel, Login, LoginTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
             
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<LoginOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<LoginOutputModel, Login, LoginTranslation>(sessionDI, entity);
         }
 
         public async Task<LoginOutputModel> Handle(UpdateLoginCommand message, CancellationToken cancellationToken)
@@ -63,16 +63,18 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<Login>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Login"], message.Id);
 
-            var mapped = mapper.Map<Login>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<LoginTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<LoginInputModel, Login, LoginTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<LoginOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<LoginOutputModel, Login, LoginTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteLoginCommand message, CancellationToken cancellationToken)

@@ -20,6 +20,7 @@ using Fi.Persistence.Relational.Interfaces;
 using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Fi.Infra.Utility;
 
 namespace Fi.Patika.Api.Impl.Command
 {
@@ -48,12 +49,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<SupportRequest>(message.Model);
-            
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<SupportRequestInputModel, SupportRequest, SupportRequestTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<SupportRequestOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<SupportRequestOutputModel, SupportRequest, SupportRequestTranslation>(sessionDI, entity);
         }
 
         public async Task<SupportRequestOutputModel> Handle(UpdateSupportRequestCommand message, CancellationToken cancellationToken)
@@ -63,21 +64,23 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<SupportRequest>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "SupportRequest"], message.Id);
 
-            fromDb.AnsweredDate = DateTime.UtcNow;
+            fromDb.AnsweredDate = DateTimeHelper.UtcNow;
             fromDb.Answered = message.Model.Answered;
             fromDb.isAnswered = true;
             message.Model.isAnswered = true;
 
-            var mapped = mapper.Map<SupportRequest>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<SupportRequestTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<SupportRequestInputModel, SupportRequest, SupportRequestTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<SupportRequestOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<SupportRequestOutputModel, SupportRequest, SupportRequestTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteSupportRequestCommand message, CancellationToken cancellationToken)

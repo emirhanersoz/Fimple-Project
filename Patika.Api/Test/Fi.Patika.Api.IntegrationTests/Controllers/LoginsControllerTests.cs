@@ -29,20 +29,13 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         public async Task CreateLogin_IfUserExists_ReturnsSuccess_WithItem()
         {
             //Arrange
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
 
             var loginInputModel = Builder<LoginInputModel>.CreateNew() 
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
             loginInputModel.UserId = 1;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
             var loginCreateResponse = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
                 $"{basePath}", loginInputModel);
 
@@ -54,20 +47,14 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         [Fact, Trait("Category", "Integration")]
         public async Task UpdateLogin_WhenCalled_ReturnsSuccess_WithUpdatedItem()
         {
-            // Arrange
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            //Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
 
             var loginInputModel = Builder<LoginInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
             loginInputModel.UserId = 1;
 
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
+            //Act
             var loginCreateResponse = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
                 $"{basePath}", loginInputModel);
             loginInputModel.LoginTime = DateTimeHelper.UtcNow.AddDays(1);
@@ -79,6 +66,7 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             // Assert
             response.FiShouldBeSuccessStatus();
             response.Value.ShouldNotBeNull();
+            response.Value.Equals(loginInputModel.LoginTime);
 
             output.WriteLine(response.Value.LoginTime.ToString());
         }
@@ -87,25 +75,15 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         public async Task GetLoginById_IfRequestedItemExist_ReturnsSuccess_WithItem()
         {
             //Arrange
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
 
             var loginInputModel = Builder<LoginInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
             loginInputModel.UserId = 1;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
             var loginCreateResponse = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
                 $"{basePath}", loginInputModel);
-
-            var checkUserResponse = await HttpClient.FiGetTestAsync<UserOutputModel>(
-                 $"api/v1/Patika/Users/{userCreateResponse.Value.Id}", false);
 
             var checkLoginResponse = await HttpClient.FiGetTestAsync<LoginOutputModel>(
                  $"{basePath}/{loginCreateResponse.Value.Id}", false);
@@ -120,25 +98,15 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         public async Task GetAllLoginsWithUserId_IfItemsExist_ReturnSuccess_WithList()
         {
             //Arrange
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
 
             var loginInputModel = Builder<LoginInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
             loginInputModel.UserId = 1;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
             var loginCreateResponse = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
                 $"{basePath}", loginInputModel);
-
-            var checkUserResponse = await HttpClient.FiGetTestAsync<UserOutputModel>(
-                 $"api/v1/Patika/Users/{userCreateResponse.Value.Id}", false);
 
             var checkLoginResponse = await HttpClient.FiGetTestAsync<List<LoginOutputModel>>(
                  $"{basePath}/ByParameters", false);
@@ -152,20 +120,12 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         [Fact, Trait("Category", "Integration")]
         public async Task DeleteLoginsByKey_WhenCalled_ReturnsSuccess()
         {
-            //Arrange
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            ///Arrange
+            await TestDbContext.EnsureEntityIsEmpty<Login>();
 
             var loginInputModel = Builder<LoginInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
             loginInputModel.UserId = 1;
-
-            //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
 
             var loginCreateResponse = await HttpClient.FiPostTestAsync<LoginInputModel, LoginOutputModel>(
                 $"{basePath}", loginInputModel);

@@ -10,7 +10,7 @@ namespace Fi.Patika.Api
     public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
-        {   
+        {
             CreateMap<Login, LoginOutputModel>();
             CreateMap<LoginInputModel, Login>();
 
@@ -40,9 +40,6 @@ namespace Fi.Patika.Api
   
             CreateMap<Customer, CustomerOutputModel>();
             CreateMap<CustomerInputModel, Customer>();
-            /*
-            CreateMap<Sample, SampleOutputModel>();
-            CreateMap<SampleInputModel, Sample>();*/
         }
     }
 }

@@ -23,7 +23,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fi.Patika.Api.Impl.Query
 {
-    public class MoneyTransferQueryHandler:
+    public class MoneyTransferQueryHandler :
         IFiRequestHandler<GetMoneyTransferByParametersQuery, List<MoneyTransferOutputModel>>,
         IFiRequestHandler<GetMoneyTransferByKeyQuery, MoneyTransferOutputModel>
     {
@@ -33,16 +33,16 @@ namespace Fi.Patika.Api.Impl.Query
         private readonly IExceptionFactory exceptionFactory;
         private readonly IJsonStringLocalizer localizer;
 
-        public MoneyTransferQueryHandler(ISessionContextDI sessionDI, IFiModuleDbContext dbContext, 
+        public MoneyTransferQueryHandler(ISessionContextDI sessionDI, IFiModuleDbContext dbContext,
             IMapper mapper, IExceptionFactory exceptionFactory, IJsonStringLocalizer localizer)
         {
             this.sessionDI = sessionDI;
-            this.dbContext = dbContext as FiPatikaDbContext;  
+            this.dbContext = dbContext as FiPatikaDbContext;
             this.mapper = mapper;
             this.exceptionFactory = exceptionFactory;
             this.localizer = localizer;
         }
-        
+
         public async Task<MoneyTransferOutputModel> Handle(GetMoneyTransferByKeyQuery message, CancellationToken cancellationToken)
         {
             sessionDI.ExecutionTrace.InitTrace();

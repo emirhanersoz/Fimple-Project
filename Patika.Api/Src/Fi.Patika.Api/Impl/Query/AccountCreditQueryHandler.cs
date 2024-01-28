@@ -41,7 +41,7 @@ namespace Fi.Patika.Api.Impl.Query
             this.exceptionFactory = exceptionFactory;
             this.localizer = localizer;
         }
-        
+
         public async Task<List<AccountCreditOutputModel>> Handle(GetAccountCreditByParametersQuery message, CancellationToken cancellationToken)
         {
             sessionDI.ExecutionTrace.InitTrace();
@@ -51,6 +51,5 @@ namespace Fi.Patika.Api.Impl.Query
 
             return mapper.Map<List<AccountCreditOutputModel>>(entityList);
         }
-
     }
 }

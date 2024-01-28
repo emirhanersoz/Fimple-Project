@@ -20,6 +20,7 @@ namespace Fi.Patika.Api.Domain.Entity
     [EntityAttribute(EA.ERT.AsIs, EA.EDT.TransactionalData, EA.ECT.Common, EA.ETT.Common, EA.EMT.Mandatory)]
     public class AccountCredit : EntityBaseWithBaseFieldsWithIdentity
     {
+        public string Description { get; set; }
         public int AccountId { get; set; }
         public int CreditId { get; set; }
 
@@ -34,16 +35,18 @@ namespace Fi.Patika.Api.Domain.Entity
             builder.Property(m => m.AccountId).IsRequired(true);
             builder.Property(m => m.CreditId).IsRequired(true);
 
-            builder.HasIndex(m => new {m.AccountId, m.CreditId});
+            builder.HasIndex(m => new { m.AccountId, m.CreditId });
 
             builder.HasOne(m => m.Account)
                 .WithMany(m => m.AccountCredits)
-                .HasForeignKey(m => m.AccountId);
+                .HasForeignKey(m => m.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(m => m.CreditId);
             builder.HasOne(m => m.Credit)
                 .WithMany(m => m.AccountCredits)
-                .HasForeignKey(m => m.CreditId);
+                .HasForeignKey(m => m.CreditId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -21,6 +21,7 @@ using Fi.Persistence.Relational.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Fi.Infra.Utility;
+using Fi.Infra.Schema.Const;
 
 namespace Fi.Patika.Api.Impl.Command
 {
@@ -50,12 +51,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<Payee>(message.Model);
-            
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<PayeeInputModel, Payee, PayeeTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<PayeeOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<PayeeOutputModel, Payee, PayeeTranslation>(sessionDI, entity);
         }
 
         public async Task<PayeeOutputModel> Handle(UpdatePayeeCommand message, CancellationToken cancellationToken)
@@ -65,16 +66,18 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<Payee>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Payee"], message.Id);
 
-            var mapped = mapper.Map<Payee>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<PayeeTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<PayeeInputModel, Payee, PayeeTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<PayeeOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<PayeeOutputModel, Payee, PayeeTranslation>(sessionDI, fromDb);
         }
 
         public async Task<PayeeOutputModel> Handle(PaymentPayeeCommand message, CancellationToken cancellationToken)
@@ -84,6 +87,7 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDbPayee = await dbContext.Set<Payee>()
+                                        .Include(x => x.Translations)
                                         .Include(p => p.Account)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
 
@@ -99,12 +103,15 @@ namespace Fi.Patika.Api.Impl.Command
             fromDbPayee.Account.Balance -= message.Model.Amount;
             message.Model.isPayment = true;
 
-            var mapped = mapper.Map<Payee>(message.Model);
+            fromDbPayee.Account.Balance = Math.Round(fromDbPayee.Account.Balance, ISOCurrencyCodes.TRY.DecimalPlace);
+
+            fromDbPayee.Translations = TranslationHelper.GetTranslationsForNameAndDescription<PayeeTranslation>(message.Model, fromDbPayee.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<PayeeInputModel, Payee, PayeeTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDbPayee, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<PayeeOutputModel>(fromDbPayee);
+            return mapper.MapToModelForNameAndDescriptionTranslation<PayeeOutputModel, Payee, PayeeTranslation>(sessionDI, fromDbPayee);
         }
 
         public async Task<VoidResult> Handle(DeletePayeeCommand message, CancellationToken cancellationToken)

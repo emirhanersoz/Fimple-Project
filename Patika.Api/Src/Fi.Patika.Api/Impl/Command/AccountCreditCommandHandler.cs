@@ -47,12 +47,11 @@ namespace Fi.Patika.Api.Impl.Command
             sessionDI.ExecutionTrace.InitTrace();
 
             var entity = mapper.Map<AccountCredit>(message.Model);
-            
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return mapper.Map<AccountCreditOutputModel>(entity);
         }
-
     }
 }

@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("6ade85be-16ab-450b-a0ba-929da8f9414c")]
-        [ApiAuthorizationAttribute(ScopeKeys.View_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.View_Credit)]
         [HttpGet("{Id:int}")]
         public async Task<ApiResponse<CreditOutputModel>> GetByKey(int Id)
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("eed21e39-1447-43fd-a9e6-727ffc0401ab")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_Credit)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<CreditOutputModel>>> GetByParameters()
         {
@@ -49,7 +49,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("46b6551e-0cc3-415b-9ca1-3accdf0bf750")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Credit)]
         [HttpPost]
         public async Task<ApiResponse<CreditOutputModel>> Create([FromBody]CreditInputModel model)
         {
@@ -61,7 +61,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("7d24ab98-645b-469e-a572-661eda22318e")]
-        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_Credit)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<CreditOutputModel>> Update(int Id, [FromBody]CreditInputModel model)
         {
@@ -75,7 +75,7 @@ namespace Fi.Patika.Api.Controllers
         //If you really need delete api, take the [OnlyForDevelopment] tag as comment. Or you can delete the API completely.
         [OnlyForDevelopment]
         [ApiKey("299283ed-6df1-40ee-8edf-87ebebfdde67")]
-        [ApiAuthorizationAttribute(ScopeKeys.Delete_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Delete_Credit)]
         [HttpDelete("{Id:int}")]
         public async Task<ApiResponse> DeleteByKey(int Id)
         {

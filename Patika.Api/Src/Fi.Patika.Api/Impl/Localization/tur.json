@@ -8,7 +8,8 @@
   "Texts": {
     "Fi.Infra.Exceptions.FiBusinessReason": {
       "Welcome Localization": "Yerelleştirmeye Hoş Geldiniz",
-      "A sample with same Code already exists. {0} ({1}).": "Aynı Kod'a sahip bir örnek zaten var. {0} ({1})."
+      "A sample with same Code already exists. {0} ({1}).": "Aynı Kod'a sahip bir örnek zaten var. {0} ({1}).",
+      "Account balance is insufficient.{0} ({1}).": "Hesap bakiyeniz yetersiz.{0} ({1})."
     }
   },
     "Fi.Patika.Schema.Model.AccountType": {

@@ -33,14 +33,15 @@ namespace Fi.Patika.Api.Domain.Entity
         protected override void OnConfigure(EntityTypeBuilder<MoneyTransfer> builder)
         {
             builder.Property(m => m.DestAccountId).IsRequired(true);
-            builder.Property(m => m.Amount).IsRequired(true);
+            builder.Property(m => m.Amount).IsRequired(true).HasPrecision(24, 6);
             builder.Property(m => m.Comment).IsRequired(true)
                         .HasMaxLength(200);
 
             builder.HasIndex(m => m.AccountId);
             builder.HasOne(m => m.Account)
                 .WithMany(m => m.MoneyTransfers)
-                .HasForeignKey(m => m.AccountId);
+                .HasForeignKey(m => m.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

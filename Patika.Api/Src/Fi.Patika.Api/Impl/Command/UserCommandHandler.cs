@@ -48,12 +48,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<User>(message.Model);
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<UserInputModel, User, UserTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<UserOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<UserOutputModel, User, UserTranslation>(sessionDI, entity);
         }
 
         public async Task<UserOutputModel> Handle(UpdateUserCommand message, CancellationToken cancellationToken)
@@ -63,16 +63,18 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<User>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "User"], message.Id);
 
-            var mapped = mapper.Map<User>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<UserTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<UserInputModel, User, UserTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<UserOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<UserOutputModel, User, UserTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteUserCommand message, CancellationToken cancellationToken)

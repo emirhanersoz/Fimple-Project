@@ -7,12 +7,14 @@ using Fi.Infra.Schema.Json;
 
 namespace Fi.Patika.Schema.Model
 {
-    public record CustomerInputModel : InputModelBase
+    public record CustomerInputModel : InputModelBase, ITranslationInputModelWithNameMLAndDescriptionML
     {
         [JsonIgnore]
         public int Id { get; set; }
+        public List<LanguagePair> NameML { get; set; }
+        public List<LanguagePair> DescriptionML { get; set; }
         public int UserId { get; set; }
-        public string Name { get; set; }
+        public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -21,11 +23,15 @@ namespace Fi.Patika.Schema.Model
         public string Address { get; set; }
     }
 
-    public record CustomerOutputModel : OutputModelBase
+    public record CustomerOutputModel : OutputModelBase, ITranslationOutputModelWithNameAndDescription
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
         public string Name { get; set; }
+        public List<LanguagePair> NameML { get; set; }
+        public string Description { get; set; }
+        public List<LanguagePair> DescriptionML { get; set; }
+        public int UserId { get; set; }
+        public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }

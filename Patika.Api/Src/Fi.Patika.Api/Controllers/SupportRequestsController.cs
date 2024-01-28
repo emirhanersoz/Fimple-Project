@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("d7b5dd30-2125-48a9-b847-b9f70decade8")]
-        [ApiAuthorizationAttribute(ScopeKeys.View_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.View_SupportRequest)]
         [HttpGet("{Id:int}")]
         public async Task<ApiResponse<SupportRequestOutputModel>> GetByKey(int Id)
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("e4b97443-9afa-42d1-9ecd-88737023bda0")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_SupportRequest)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<SupportRequestOutputModel>>> GetByParameters()
         {
@@ -49,7 +49,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("ff9d567f-c395-4b22-aea3-f64a19bab2a8")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_SupportRequest)]
         [HttpPost]
         public async Task<ApiResponse<SupportRequestOutputModel>> Create([FromBody]SupportRequestInputModel model)
         {
@@ -61,7 +61,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("6b875f52-28d0-4a95-b507-5ffbfea5501e")]
-        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_SupportRequest)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<SupportRequestOutputModel>> Update(int Id, [FromBody]SupportRequestInputModel model)
         {
@@ -75,7 +75,7 @@ namespace Fi.Patika.Api.Controllers
         //If you really need delete api, take the [OnlyForDevelopment] tag as comment. Or you can delete the API completely.
         [OnlyForDevelopment]
         [ApiKey("5dc85b3f-ddb1-4571-b98b-1cbcfc363c74")]
-        [ApiAuthorizationAttribute(ScopeKeys.Delete_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Delete_SupportRequest)]
         [HttpDelete("{Id:int}")]
         public async Task<ApiResponse> DeleteByKey(int Id)
         {

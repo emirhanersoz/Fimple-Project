@@ -47,24 +47,10 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         }
 
         [Fact, Trait("Category", "Integration")]
-        public async Task GetCreditForAccount_IfRequestedCreditAndAccountNotExist_ReturnsSuccess_WithItem()
+        public async Task LoanCreditForAccount_IfRequestedCreditAndAccountNotExist_ReturnsSuccess_WithItem()
         {
             //Arrange
-            const decimal balance = 1000;
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-
-            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            customerInputModel.UserId = 1;
-
-            var accountInputModel = Builder<AccountInputModel>.CreateNew()
-                     .With(p => p.Balance = balance)
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            accountInputModel.CustomerId = 1;
+            await TestDbContext.EnsureEntityIsEmpty<AccountCredit>();
 
             var creditInputModel = Builder<CreditInputModel>.CreateNew()
                .With(p => p.TotalAmount = 10000).With(p => p.MontlyPayment = 1000)
@@ -77,22 +63,13 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             accountCreditInputModel.AccountId = 1;
             accountCreditInputModel.CreditId = 1;
 
-            //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
-            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
-                "api/v1/Patika/Customers", customerInputModel);
-
-            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
-                "api/v1/Patika/Accounts", accountInputModel);
-
             var creditCreateResponsePost = await HttpClient.FiPostTestAsync<CreditInputModel, CreditOutputModel>(
                 $"{basePath}", creditInputModel);
 
             var accountCreditCreateResponsePost = await HttpClient.FiPostTestAsync<AccountCreditInputModel, AccountCreditOutputModel>(
                 "api/v1/Patika/AccountCredits", accountCreditInputModel);
 
+            //Act
             var loanCreditResponsePost = await HttpClient.FiPostTestAsync<AccountCreditInputModel, AccountCreditOutputModel>(
                $"{basePath}/getCredit", accountCreditInputModel);
 

@@ -55,12 +55,12 @@ namespace Fi.Patika.Api.Impl.Command
 
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<Account>(message.Model);
-            
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<AccountInputModel, Account, AccountTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<AccountOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<AccountOutputModel, Account, AccountTranslation>(sessionDI, entity);
         }
 
         public async Task<AccountOutputModel> Handle(UpdateAccountCommand message, CancellationToken cancellationToken)
@@ -70,16 +70,18 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<Account>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Account"], message.Id);
 
-            var mapped = mapper.Map<Account>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<AccountTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<AccountInputModel, Account, AccountTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<AccountOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<AccountOutputModel, Account, AccountTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteAccountCommand message, CancellationToken cancellationToken)

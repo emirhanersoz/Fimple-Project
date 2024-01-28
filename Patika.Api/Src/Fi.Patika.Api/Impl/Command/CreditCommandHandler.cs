@@ -49,12 +49,12 @@ namespace Fi.Patika.Api.Impl.Command
         {
             sessionDI.ExecutionTrace.InitTrace();
 
-            var entity = mapper.Map<Credit>(message.Model);
-            
+            var entity = mapper.MapToNewEntityForNameAndDescriptionTranslation<CreditInputModel, Credit, CreditTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
+
             await dbContext.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CreditOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<CreditOutputModel, Credit, CreditTranslation>(sessionDI, entity);
         }
 
         public async Task<CreditOutputModel> Handle(UpdateCreditCommand message, CancellationToken cancellationToken)
@@ -64,16 +64,18 @@ namespace Fi.Patika.Api.Impl.Command
             message.Model.Id = message.Id;
 
             var fromDb = await dbContext.Set<Credit>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (fromDb == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Credit"], message.Id);
 
-            var mapped = mapper.Map<Credit>(message.Model);
+            fromDb.Translations = TranslationHelper.GetTranslationsForNameAndDescription<CreditTranslation>(message.Model, fromDb.Id);
+            var mapped = mapper.MapToEntityForNameAndDescriptionTranslation<CreditInputModel, Credit, CreditTranslation>(sessionDI.TenantContext.Language.ISOCode, message.Model);
 
             await dbContext.UpdatePartial(fromDb, mapped);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CreditOutputModel>(fromDb);
+            return mapper.MapToModelForNameAndDescriptionTranslation<CreditOutputModel, Credit, CreditTranslation>(sessionDI, fromDb);
         }
 
         public async Task<VoidResult> Handle(DeleteCreditCommand message, CancellationToken cancellationToken)

@@ -2,14 +2,10 @@ Fi
 Patika
 C:\Fi\Patika.Api\Src\
 
-Customer, Efcore, Mssql
+Sample, EfCore, Mssql
 Override, Api, Cqrs, Model, Command, Query, Validator, Domain
 Id, int, 0, Key, Input, Output, Domain, Required
+Name, string, 100, Input, Output, Domain, Required, ML
+Description, string, 255, Input, Output, Domain, Required, ML
 UserId, int, 0, Input, Output, Domain, Required
-Name, string, 100, Input, Output, Domain, Required
-PhoneNumber, string, 20, Input, Output, Domain, Required
-Email, string, 100, Input, Output, Domain, Required
-DateOfBirth, DateTime, 0, Input, Output, Domain, Required
-City, string, 50, Input, Output, Domain, Required
-State, string, 50, Input, Output, Domain, Required
-Address, string, 200, Input, Output, Domain, Required
+LoginTime, DateTime, 0, Input, Output, Domain, Required

@@ -7,10 +7,12 @@ using Fi.Infra.Schema.Json;
 
 namespace Fi.Patika.Schema.Model
 {
-    public record PayeeInputModel : InputModelBase
+    public record PayeeInputModel : InputModelBase, ITranslationInputModelWithNameMLAndDescriptionML
     {
         [JsonIgnore]
         public int Id { get; set; }
+        public List<LanguagePair> NameML { get; set; }
+        public List<LanguagePair> DescriptionML { get; set; }
         public int AccountId { get; set; }
         public decimal Amount { get; set; }
         public int PaymentDay { get; set; }
@@ -19,9 +21,13 @@ namespace Fi.Patika.Schema.Model
         public PayeeType PayeeType { get; set; }
     }
 
-    public record PayeeOutputModel : OutputModelBase
+    public record PayeeOutputModel : OutputModelBase, ITranslationOutputModelWithNameAndDescription
     {
         public int Id { get; set; }
+        public string Name { get; set; }
+        public List<LanguagePair> NameML { get; set; }
+        public string Description { get; set; }
+        public List<LanguagePair> DescriptionML { get; set; }
         public int AccountId { get; set; }
         public decimal Amount { get; set; }
         public int PaymentDay { get; set; }

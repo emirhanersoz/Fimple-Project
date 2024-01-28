@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("ba06b221-7bca-4c7c-a033-8198407517ff")]
-        [ApiAuthorizationAttribute(ScopeKeys.View_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.View_Customer)]
         [HttpGet("{Id:int}")]
         public async Task<ApiResponse<CustomerOutputModel>> GetByKey(int Id)
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("bd58fb92-54be-4498-8eab-048f4f73834b")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_Customer)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<CustomerOutputModel>>> GetByParameters()
         {
@@ -49,7 +49,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("77fa76ab-7323-4a49-9800-eae4351797dd")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_Customer)]
         [HttpPost]
         public async Task<ApiResponse<CustomerOutputModel>> Create([FromBody]CustomerInputModel model)
         {
@@ -61,7 +61,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("418b4dcf-903c-4191-8b20-eb7eff3f428e")]
-        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_Customer)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<CustomerOutputModel>> Update(int Id, [FromBody]CustomerInputModel model)
         {
@@ -75,7 +75,7 @@ namespace Fi.Patika.Api.Controllers
         //If you really need delete api, take the [OnlyForDevelopment] tag as comment. Or you can delete the API completely.
         [OnlyForDevelopment]
         [ApiKey("79d1e541-81c9-466a-8dfe-0ecbcfd74952")]
-        [ApiAuthorizationAttribute(ScopeKeys.Delete_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Delete_Customer)]
         [HttpDelete("{Id:int}")]
         public async Task<ApiResponse> DeleteByKey(int Id)
         {

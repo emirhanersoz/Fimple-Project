@@ -1,4 +1,5 @@
-﻿using Fi.Patika.Api.IntegrationTests.Initialization;
+﻿using Fi.Patika.Api.Domain.Entity;
+using Fi.Patika.Api.IntegrationTests.Initialization;
 using Fi.Patika.Schema.Model;
 using Fi.Test.Extensions;
 using FizzWare.NBuilder;
@@ -24,39 +25,13 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
         public async Task DepositToAccount_IfRequestedNotExist_ReturnsSuccess_WithUpdatedBalance()
         {
             //Arrange
-            const decimal balance = 100000;
-            const decimal withdrawAmount = 10000;
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-
-            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            customerInputModel.UserId = 1;
-
-            var accountInputModel = Builder<AccountInputModel>.CreateNew()
-                     .With(p => p.Balance = balance)
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            accountInputModel.CustomerId = 1;
+            await TestDbContext.EnsureEntityIsEmpty<DepositAndWithdraw>();
 
             var depositAndWithdrawInputModel = Builder<DepositAndWithdrawInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            depositAndWithdrawInputModel.isSucceded = false;
-            depositAndWithdrawInputModel.AccountId = 1;
-            depositAndWithdrawInputModel.Amount = withdrawAmount;
+            depositAndWithdrawInputModel.Amount = 4000;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
-            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
-                "api/v1/Patika/Customers", customerInputModel);
-
-            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
-                "api/v1/Patika/Accounts", accountInputModel);
-
             var depositAndWithdrawCreateResponse = await HttpClient.FiPostTestAsync<DepositAndWithdrawInputModel, DepositAndWithdrawOutputModel>(
                 $"{basePath}", depositAndWithdrawInputModel);
 
@@ -66,53 +41,27 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
             var checDepositAndWithdrawResponse = await HttpClient.FiGetTestAsync<DepositAndWithdrawOutputModel>(
                 $"{basePath}/{depositAndWithdrawCreateResponse.Value.Id}", false);
 
-            var checkUpdatedAccount = await HttpClient.FiGetTestAsync<AccountOutputModel>(
-                     $"api/v1/Patika/Accounts/{accountCreateResponse.Value.Id}", false);
-
+            var responseAccount = await HttpClient.FiGetTestAsync<AccountOutputModel>(
+               $"api/v1/Patika/Accounts/{depositAndWithdrawInputModel.AccountId}", false);
             // Assert
             checDepositAndWithdrawResponse.FiShouldBeSuccessStatus();
             checDepositAndWithdrawResponse.Value.ShouldNotBeNull();
 
-            output.WriteLine(checkUpdatedAccount.Value.Balance.ToString());
+            output.WriteLine(responseAccount.Value.Balance.ToString());
         }
 
         [Fact, Trait("Category", "Integration")]
         public async Task WithdrawToAccount_IfRequestedNotExist_ReturnsSuccess_WithUpdatedBalance()
         {
             //Arrange
-            const decimal balance = 100000;
-            const decimal withdrawAmount = 10000;
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-
-            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            customerInputModel.UserId = 1;
-
-            var accountInputModel = Builder<AccountInputModel>.CreateNew()
-                     .With(p => p.Balance = balance)
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            accountInputModel.CustomerId = 1;
+            await TestDbContext.EnsureEntityIsEmpty<DepositAndWithdraw>();
 
             var depositAndWithdrawInputModel = Builder<DepositAndWithdrawInputModel>.CreateNew()
+                     .With(p => p.AccountId = 2)
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            depositAndWithdrawInputModel.isSucceded = false;
-            depositAndWithdrawInputModel.AccountId = 1;
-            depositAndWithdrawInputModel.Amount = withdrawAmount;
+            depositAndWithdrawInputModel.Amount = 5000;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
-            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
-                "api/v1/Patika/Customers", customerInputModel);
-
-            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
-                "api/v1/Patika/Accounts", accountInputModel);
-
             var depositAndWithdrawCreateResponse = await HttpClient.FiPostTestAsync<DepositAndWithdrawInputModel, DepositAndWithdrawOutputModel>(
                 $"{basePath}", depositAndWithdrawInputModel);
 
@@ -121,54 +70,28 @@ namespace Fi.Patika.Api.IntegrationTests.Controllers
 
             var checDepositAndWithdrawResponse = await HttpClient.FiGetTestAsync<DepositAndWithdrawOutputModel>(
                 $"{basePath}/{depositAndWithdrawCreateResponse.Value.Id}", false);
-
-            var checkUpdatedAccount = await HttpClient.FiGetTestAsync<AccountOutputModel>(
-                     $"api/v1/Patika/Accounts/{accountCreateResponse.Value.Id}", false);
-
+            
+            var responseAccount = await HttpClient.FiGetTestAsync<AccountOutputModel>(
+                    $"api/v1/Patika/Accounts/{depositAndWithdrawInputModel.AccountId}", false);
+            
             // Assert
             checDepositAndWithdrawResponse.FiShouldBeSuccessStatus();
             checDepositAndWithdrawResponse.Value.ShouldNotBeNull();
 
-            output.WriteLine(checkUpdatedAccount.Value.Balance.ToString());
+            output.WriteLine(responseAccount.Value.Balance.ToString());
+
         }
 
         [Fact, Trait("Category", "Integration")]
         public async Task GetDepositAndWithByAccountKey_IfRequestedItemExists_ReturnsSuccess_WithItem()
         {
             //Arrange
-            const decimal balance = 100000;
-            const decimal withdrawAmount = 10000;
-            byte[] byteArray = helperMethodsForTests.GeneratorByteCodes();
-
-            var userInputModel = Builder<UserInputModel>.CreateNew()
-                    .With(p => p.PasswordHash = byteArray).With(p => p.PasswordSalt = byteArray).With(p => p.Id = 1)
-                    .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-
-            var customerInputModel = Builder<CustomerInputModel>.CreateNew()
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            customerInputModel.UserId = 1;
-
-            var accountInputModel = Builder<AccountInputModel>.CreateNew()
-                     .With(p => p.Balance = balance)
-                     .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            accountInputModel.CustomerId = 1;
+            await TestDbContext.EnsureEntityIsEmpty<Payee>();
 
             var depositAndWithdrawInputModel = Builder<DepositAndWithdrawInputModel>.CreateNew()
                      .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
-            depositAndWithdrawInputModel.isSucceded = false;
-            depositAndWithdrawInputModel.AccountId = 1;
-            depositAndWithdrawInputModel.Amount = withdrawAmount;
 
             //Act
-            var userCreateResponse = await HttpClient.FiPostTestAsync<UserInputModel, UserOutputModel>(
-                "api/v1/Patika/Users", userInputModel);
-
-            var customerCreateResponse = await HttpClient.FiPostTestAsync<CustomerInputModel, CustomerOutputModel>(
-                "api/v1/Patika/Customers", customerInputModel);
-
-            var accountCreateResponse = await HttpClient.FiPostTestAsync<AccountInputModel, AccountOutputModel>(
-                "api/v1/Patika/Accounts", accountInputModel);
-
             var depositAndWithdrawCreateResponse = await HttpClient.FiPostTestAsync<DepositAndWithdrawInputModel, DepositAndWithdrawOutputModel>(
                 $"{basePath}", depositAndWithdrawInputModel);
 

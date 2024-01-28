@@ -48,12 +48,13 @@ namespace Fi.Patika.Api.Impl.Query
             sessionDI.ExecutionTrace.InitTrace();
 
             var entity = await dbContext.Set<Credit>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsNoTrackingAsync(x => x.Id == message.Id, cancellationToken);
 
             if (entity == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Credit"], message.Id);
 
-            return mapper.Map<CreditOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<CreditOutputModel, Credit, CreditTranslation>(sessionDI, entity);
         }
 
         public async Task<List<CreditOutputModel>> Handle(GetCreditByParametersQuery message, CancellationToken cancellationToken)
@@ -61,10 +62,10 @@ namespace Fi.Patika.Api.Impl.Query
             sessionDI.ExecutionTrace.InitTrace();
 
             var entityList = await dbContext.Set<Credit>()
+                                                .Include(x => x.Translations.Where(at => at.LanguageCode == sessionDI.Language().ISOCode))
                                                 .ToListAsNoTrackingAsync(sessionDI.MessageContext);
 
-            return mapper.Map<List<CreditOutputModel>>(entityList);
+            return mapper.MapToModelListForNameAndDescriptionTranslation<CreditOutputModel, Credit, CreditTranslation>(sessionDI, entityList);
         }
-
     }
 }

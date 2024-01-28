@@ -12,11 +12,23 @@ namespace Fi.Patika.Api.Impl.Validator
         public SupportRequestInputModelValidator(IJsonStringLocalizer localizer)
         {
             RuleFor(x => x).NotEmpty();
+            RuleForEach(x => x.NameML).ChildRules(items =>
+            {
+                items.RuleFor(x => x.Value).NotEmpty().WithMessage(x => localizer[BaseErrorCodes.TranslationValueCanNotBeEmpty, x.LanguageCode, "Name"]);
+                items.RuleFor(x => x.Value).MaximumLength(100).WithMessage(x => localizer[BaseErrorCodes.MaximumLengthWarning, "100", "Name"]);
+            });
+            RuleForEach(x => x.DescriptionML).ChildRules(items =>
+            {
+                items.RuleFor(x => x.Value).NotEmpty().WithMessage(x => localizer[BaseErrorCodes.TranslationValueCanNotBeEmpty, x.LanguageCode, "Description"]);
+                items.RuleFor(x => x.Value).MaximumLength(255).WithMessage(x => localizer[BaseErrorCodes.MaximumLengthWarning, "255", "Description"]);
+            });
+
+            RuleFor(x => x).NotEmpty();
             RuleFor(x => x.CustomerId).NotNull();
             RuleFor(x => x.Subject).NotEmpty();
             RuleFor(x => x.Subject).MaximumLength(100);
-            RuleFor(x => x.Description).NotEmpty();
-            RuleFor(x => x.Description).MaximumLength(100);
+            RuleFor(x => x.Comment).NotEmpty();
+            RuleFor(x => x.Comment).MaximumLength(100);
             RuleFor(x => x.isAnswered).NotNull();
             RuleFor(x => x.Answered).MaximumLength(100);
         }

@@ -86,7 +86,7 @@ namespace Fi.Patika.Api.Impl.Command
                                         .FirstOrDefaultAsync(x => x.Id == message.Id, cancellationToken);
             if (entity == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "MoneyTransfer"], message.Id);
-            
+
             dbContext.Remove<MoneyTransfer>(entity);
             await dbContext.SaveChangesAsync(cancellationToken);
 

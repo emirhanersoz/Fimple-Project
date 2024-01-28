@@ -48,12 +48,13 @@ namespace Fi.Patika.Api.Impl.Query
             sessionDI.ExecutionTrace.InitTrace();
 
             var entity = await dbContext.Set<Account>()
+                                        .Include(x => x.Translations)
                                         .FirstOrDefaultAsNoTrackingAsync(x => x.Id == message.Id, cancellationToken);
 
             if (entity == null)
                 throw exceptionFactory.BadRequestEx(BaseErrorCodes.ItemDoNotExists, localizer[FiLocalizedStringType.EntityName, "Account"], message.Id);
 
-            return mapper.Map<AccountOutputModel>(entity);
+            return mapper.MapToModelForNameAndDescriptionTranslation<AccountOutputModel, Account, AccountTranslation>(sessionDI, entity);
         }
 
         public async Task<List<AccountOutputModel>> Handle(GetAccountByParametersQuery message, CancellationToken cancellationToken)
@@ -61,9 +62,10 @@ namespace Fi.Patika.Api.Impl.Query
             sessionDI.ExecutionTrace.InitTrace();
 
             var entityList = await dbContext.Set<Account>()
+                                                .Include(x => x.Translations.Where(at => at.LanguageCode == sessionDI.Language().ISOCode))
                                                 .ToListAsNoTrackingAsync(sessionDI.MessageContext);
 
-            return mapper.Map<List<AccountOutputModel>>(entityList);
+            return mapper.MapToModelListForNameAndDescriptionTranslation<AccountOutputModel, Account, AccountTranslation>(sessionDI, entityList);
         }
     }
 }

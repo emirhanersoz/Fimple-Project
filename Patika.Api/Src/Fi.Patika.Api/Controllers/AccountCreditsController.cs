@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("f5316152-835b-4722-8598-1c00ec6e8091")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_AccountCredit)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<AccountCreditOutputModel>>> GetByParameters()
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("040d69ee-c731-4c99-81fd-52a919fd137e")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_AccountCredit)]
         [HttpPost]
         public async Task<ApiResponse<AccountCreditOutputModel>> Create([FromBody]AccountCreditInputModel model)
         {
@@ -47,6 +47,5 @@ namespace Fi.Patika.Api.Controllers
 
             return result;
         }
-
     }
 }

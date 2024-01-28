@@ -25,7 +25,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("227337c6-33d5-4fd3-86a0-4c70acd86b58")]
-        [ApiAuthorizationAttribute(ScopeKeys.View_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.View_DepositAndWithdraw)]
         [HttpGet("{Id:int}")]
         public async Task<ApiResponse<DepositAndWithdrawOutputModel>> GetByKey(int Id)
         {
@@ -37,7 +37,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("0b2b8964-dfe8-441c-aee7-77aef6bcf2f3")]
-        [ApiAuthorizationAttribute(ScopeKeys.List_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.List_DepositAndWithdraw)]
         [HttpGet("ByParameters")]
         public async Task<ApiResponse<List<DepositAndWithdrawOutputModel>>> GetByParameters()
         {
@@ -49,7 +49,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("6d6f0a5b-dc02-4d03-8085-29c0c9850d39")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Create_DepositAndWithdraw)]
         [HttpPost]
         public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Create([FromBody]DepositAndWithdrawInputModel model)
         {
@@ -61,7 +61,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("6012b350-e7ab-44df-bfa6-76d91ef8073a")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Withdraw_Account)]
         [HttpPut("{Id:int}/withdraw")]
         public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Withdraw(int Id, [FromBody] DepositAndWithdrawInputModel model)
         {
@@ -73,7 +73,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("8ded44C2-22c4-4986-b1bc-375ad3d24742")]
-        [ApiAuthorizationAttribute(ScopeKeys.Create_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Deposit_Account)]
         [HttpPut("{Id:int}/deposit")]
         public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Deposit(int Id, [FromBody] DepositAndWithdrawInputModel model)
         {
@@ -85,7 +85,7 @@ namespace Fi.Patika.Api.Controllers
         }
 
         [ApiKey("3a9b5b96-7a15-4469-a2ea-8014737505ee")]
-        [ApiAuthorizationAttribute(ScopeKeys.Update_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Update_DepositAndWithdraw)]
         [HttpPut("{Id:int}")]
         public async Task<ApiResponse<DepositAndWithdrawOutputModel>> Update(int Id, [FromBody]DepositAndWithdrawInputModel model)
         {
@@ -99,7 +99,7 @@ namespace Fi.Patika.Api.Controllers
         //If you really need delete api, take the [OnlyForDevelopment] tag as comment. Or you can delete the API completely.
         [OnlyForDevelopment]
         [ApiKey("b747992c-9d21-401f-a2e5-5fa501ea0c67")]
-        [ApiAuthorizationAttribute(ScopeKeys.Delete_Patika)]
+        [ApiAuthorizationAttribute(ScopeKeys.Delete_DepositAndWithdraw)]
         [HttpDelete("{Id:int}")]
         public async Task<ApiResponse> DeleteByKey(int Id)
         {

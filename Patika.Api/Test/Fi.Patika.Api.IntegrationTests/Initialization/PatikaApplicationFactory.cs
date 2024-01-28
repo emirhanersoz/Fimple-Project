@@ -9,6 +9,11 @@ using Fi.Test.IntegrationTests.Interfaces;
 using Moq;
 using FizzWare.NBuilder;
 using Fi.Patika.Api.Domain.Entity;
+using System.Runtime.Versioning;
+using Fi.Patika.Api.IntegrationTests.Controllers;
+using System.Security.Cryptography;
+using Fi.Infra.Utility;
+using k8s.KubeConfigModels;
 
 namespace Fi.Patika.Api.IntegrationTests.Initialization;
 
@@ -24,23 +29,104 @@ public class PatikaApplicationFactory : FiIntegrationTestApplicationFactory<Star
     }
 
     protected override async void ModuleSeedData(IFiModuleDbContext mockDbContext, IServiceProvider sp)
-    {/*
+    {
         var dbContext = (MockDbContext)mockDbContext;
 
-        for(int i = 0; i < 5; i++)
+        byte[] byteArray = GeneratorByteCodes();
+
+        var entityUser = Builder<Domain.Entity.User>.CreateNew()
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityUser.PasswordHash = byteArray;
+        entityUser.PasswordSalt = byteArray;
+        entityUser.Id = 1;
+
+        var entityLogin = Builder<Login>.CreateNew()
+                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityLogin.Id = 1;
+        entityLogin.UserId = 1;
+        entityLogin.LoginTime = DateTimeHelper.UtcNow;
+
+        var entityCustomer = Builder<Customer>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityCustomer.Id = 1;
+        entityCustomer.UserId = 1;
+
+        var entitySupportRequest = Builder<SupportRequest>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entitySupportRequest.Id = 1;
+        entitySupportRequest.CustomerId = 1;
+        entitySupportRequest.isAnswered = false;
+
+        var entityAccount = Builder<Account>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityAccount.Id = 1;
+        entityAccount.CustomerId = 1;
+        entityAccount.Salary = 10000;
+        entityAccount.Balance = 10000;
+
+        var entityDescAccount = Builder<Account>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityDescAccount.Id = 2;
+        entityDescAccount.CustomerId = 1;
+        entityDescAccount.Salary = 20000;
+        entityDescAccount.Balance = 20000;
+
+        var entityMoneyTransfer = Builder<MoneyTransfer>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityMoneyTransfer.Id = 1;
+        entityMoneyTransfer.AccountId = 1;
+        entityMoneyTransfer.DestAccountId = 2;
+
+        var entityPayee = Builder<Payee>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityPayee.Id = 1;
+        entityPayee.AccountId = 1;
+        /*
+        var entityDepositAndWithdraw = Builder<DepositAndWithdraw>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityDepositAndWithdraw.Id = 1;
+        entityDepositAndWithdraw.AccountId = 1;
+        */
+        var entityCredit = Builder<Credit>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityCredit.Id = 1;
+        entityCredit.MontlyPayment = 2500;
+        entityCredit.RepaymentPeriodMonths = 20;
+        entityCredit.LoanDate = DateTimeHelper.UtcNow.AddMonths(1);
+        entityCredit.TotalAmount = 50000;
+
+        var entityAccountCredit = Builder<AccountCredit>.CreateNew()
+            .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+        entityAccountCredit.Id = 1;
+        entityAccountCredit.AccountId = 1;
+        entityAccountCredit.CreditId = 1;
+
+        await dbContext.AddAsync(entityUser);
+        await dbContext.AddAsync(entityLogin);
+        await dbContext.AddAsync(entityCustomer);
+        await dbContext.AddAsync(entitySupportRequest);
+        await dbContext.AddAsync(entityAccount);
+        await dbContext.AddAsync(entityDescAccount);
+        await dbContext.AddAsync(entityMoneyTransfer);
+        await dbContext.AddAsync(entityPayee);
+        //await dbContext.AddAsync(entityDepositAndWithdraw);
+        await dbContext.AddAsync(entityCredit);
+        await dbContext.AddAsync(entityAccountCredit);
+        await dbContext.SaveChangesAsync();
+
+
+        byte[] GeneratorByteCodes()
         {
-            var user = Builder<User>.CreateNew()
-                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            int byteCount = 16;
+            byte[] byteArray = new byte[byteCount];
 
-            var account = Builder<Account>.CreateNew()
-                .Build().AddFiDefaults().AddFiSmartEnums().AddFiML().AddSchemaDefaults();
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(byteArray);
+            }
 
-            user.Id = i;
-            
-            await dbContext.AddAsync(user);
-            await dbContext.AddAsync(account);
-            await dbContext.SaveChangesAsync();
-        }*/
+            return byteArray;
+        }
 
 
         /* 

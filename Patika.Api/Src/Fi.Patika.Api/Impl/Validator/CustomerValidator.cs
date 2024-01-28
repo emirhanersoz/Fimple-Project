@@ -12,9 +12,21 @@ namespace Fi.Patika.Api.Impl.Validator
         public CustomerInputModelValidator(IJsonStringLocalizer localizer)
         {
             RuleFor(x => x).NotEmpty();
+            RuleForEach(x => x.NameML).ChildRules(items =>
+            {
+                items.RuleFor(x => x.Value).NotEmpty().WithMessage(x => localizer[BaseErrorCodes.TranslationValueCanNotBeEmpty, x.LanguageCode, "Name"]);
+                items.RuleFor(x => x.Value).MaximumLength(100).WithMessage(x => localizer[BaseErrorCodes.MaximumLengthWarning, "100", "Name"]);
+            });
+            RuleForEach(x => x.DescriptionML).ChildRules(items =>
+            {
+                items.RuleFor(x => x.Value).NotEmpty().WithMessage(x => localizer[BaseErrorCodes.TranslationValueCanNotBeEmpty, x.LanguageCode, "Description"]);
+                items.RuleFor(x => x.Value).MaximumLength(255).WithMessage(x => localizer[BaseErrorCodes.MaximumLengthWarning, "255", "Description"]);
+            });
+
+            RuleFor(x => x).NotEmpty();
             RuleFor(x => x.UserId).NotNull();
-            RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x.Name).MaximumLength(100);
+            RuleFor(x => x.FullName).NotEmpty();
+            RuleFor(x => x.FullName).MaximumLength(100);
             RuleFor(x => x.PhoneNumber).NotEmpty();
             RuleFor(x => x.PhoneNumber).MaximumLength(20);
             RuleFor(x => x.Email).NotEmpty();
