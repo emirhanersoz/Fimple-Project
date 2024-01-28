@@ -4,7 +4,7 @@ Merhabalar,
 
 Fimple - Patika iş birliği ile düzenlenen bu bootcamp sürecinde yer alabilmek benim için gerçekten büyük bir ayrıcalıktı. Bu süreçte kendimi en çok geliştirdiğim bootcamp deneyimi oldu. Sormuş olduğum sorulara her zaman anlayışla ve ilgiyle yaklaşmanız, mantıklı ya da mantıksız demeden bana her konuda yardımcı olmanız beni gerçekten mutlu etti.
 
-Proje gözümden kaçan, hatalı yaptığım yada yapamadığım yerler illa ki bulunmaktadır. Fakat geçen 1.5 aylık süreçte kendime kattığım bilgi ve deneyimle, bu hataları aşma ve daha iyi bir hale gelme konusunda önemli adımlar attım.
+Proje de gözümden kaçan, hatalı yaptığım yada yapamadığım yerler illa ki bulunmaktadır. Fakat geçen 1.5 aylık süreçte kendime kattığım bilgi ve deneyimle, bu hataları aşma ve daha iyi bir hale gelme konusunda önemli adımlar attım.
 
 Birlikte çalışma fırsatı bulduğum her birinizin benim için çok değerli olduğunu belirtmek isterim. Şirketinize bir değer katma fırsatı bulabilmek adına gösterdiğiniz destek için teşekkür ederim. Sizlerle birlikte böyle bir bootcamp deneyimi gerçekten büyük bir öğrenme ve gelişme fırsatıydı.
 
